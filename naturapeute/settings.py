@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'j3#s8p^o#hf(3-b6v^coxa27308aidk4ohj=_5u559-qgcof-#'
 
-DEBUG = bool(int(os.getenv('DEBUG', False)))
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -118,3 +118,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
