@@ -3,7 +3,7 @@ Description=Naturapeute Admin
 After=network.target
 
 [Service]
-ExecStart=/home/ubuntu/admin/venv/bin/gunicorn server --timeout 60 -w 2 --bind=0.0.0.0:8000 --bind=[::1]:8000 naturapeute.wsgi:application
+ExecStart=/home/ubuntu/admin/venv/bin/gunicorn --timeout 60 -w 2 --bind=0.0.0.0:8000 --bind=[::1]:8000 naturapeute.wsgi:application
 WorkingDirectory=/home/ubuntu/admin
 Restart=always
 RestartSec=3
