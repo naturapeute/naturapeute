@@ -1,0 +1,5 @@
+pymongo
+Pillow
+psycopg2
+django
+gunicorn
