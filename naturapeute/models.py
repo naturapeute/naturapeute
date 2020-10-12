@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.postgres.fields import HStoreField, ArrayField, JSONField
+from django.contrib.postgres.fields import HStoreField, JSONField
+from django_better_admin_arrayfield.models.fields import ArrayField
 
 
 class Practice(models.Model):
@@ -54,7 +55,6 @@ class Therapist(models.Model):
     symptoms = models.ManyToManyField(Symptom, related_name="therapists")
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
-
 
     def __str__(self):
         return f"{self.firstname} {self.lastname}"

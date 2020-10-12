@@ -1,5 +1,6 @@
-pymongo
-Pillow
-psycopg2-binary
 django
+django-better-admin-arrayfield
+psycopg2-binary
+pymongo  # only for importing from old mongo
+Pillow
 gunicorn
