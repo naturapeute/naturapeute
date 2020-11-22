@@ -54,7 +54,7 @@ def import_therapists():
             lastname=t["lastname"],
             email=t.get("email"),
             phone=t["phone"].replace(" ", ""),
-            is_certified=bool(t["isCertified"]),
+            is_certified=bool(t.get("isCertified")),
             description=t.get("description"),
             price=t.get("price"),
             timetable=t.get("timetable"),
@@ -63,9 +63,9 @@ def import_therapists():
             socials=t.get("socials"),
             agreements=t["agreements"],
             payment_types=t["paymentTypes"],
-            creation_date=t["creationDate"],
         )
         therapist.save()
+        therapist.creation_date = t["creationDate"]
 
         [
             therapist.practices.add(id_registry[str(k)])

@@ -56,6 +56,9 @@ class Therapist(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
 
+    class Meta:
+      ordering = ["-creation_date"]
+
     def __str__(self):
         return self.name
 

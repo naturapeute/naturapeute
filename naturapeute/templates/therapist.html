@@ -26,7 +26,7 @@
     </section>
 
     <section>
-      <h3>À propos</h3>
+      <h2>À propos</h2>
       <p>
         {{ therapist.description }}
       </p>
@@ -36,26 +36,31 @@
     </section>
 
     <section>
-      <h3>Paiement</h3>
+      <h2>Paiement</h2>
       {{ therapist.price }}
       <p>Moyens de paiement : {{ therapist.payment_types|join:', ' }}</p>
     </section>
 
     <section>
-      <h3>Adresse</h3>
+      <h2>Horaires</h2>
+      {{ therapist.timetable }}
+    </section>
+
+    {% with office=therapist.offices.first %}
+    <section>
+      <h2>Cabinet de {{ therapist.practices.first.name }} à {{ office.city }}</h2>
       <address>
-        {% with office=therapist.offices.first %}
         {{ office.street }}<br>
         {{ office.zipcode }} {{ office.city }}
-        {% endwith %}
       </address>
       <div id="map"></div>
     </section>
+    {% endwith %}
 
     {% if therapist.pictures %}
     <section>
-      <h3>Le cabinet</h3>
-      {% for picture in therapist.pictures %}
+      <h2>Le cabinet</h2>
+      {% for picture in therapist.offices.first.pictures %}
       <img src={{ picture }} height=200>
       {% endfor %}
     </section>
