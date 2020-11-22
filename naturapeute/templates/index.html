@@ -23,7 +23,7 @@
   <div>
 
     <h1>Trouvez un thérapeute</h1>
-    <form action="/therapeutes">
+    <form action={% url 'therapists' %}>
       <label>Vous avez un symptôme spécifique ?</label>
       <div class=row>
         <input type=search name=symptom placeholder="Ex: troubles du sommeil…">
@@ -31,7 +31,7 @@
       </div>
     </form>
 
-    <form action="/therapeutes">
+    <form action={% url 'therapists' %}>
       <label>Vous cherchez un pratique thérapeutique ?</label>
       <div class=row>
         <input type=search name=therapy list="therapies" placeholder="Ex: naturopathie">

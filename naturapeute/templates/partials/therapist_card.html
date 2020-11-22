@@ -9,7 +9,7 @@
       <div class=therapies-list>
         {% if therapists[0].name %}
         {% for therapy in therapist.therapies %}
-          <a class=therapy href=/therapeutes/{{ therapy.slug }}{{ queryParams }} title="Les thérapeutes en {{ therapy.name }}">{{ therapy.name }}</a>
+          <a class=therapy href="{% url 'therapist' therapist.slug0 therapist.slug1 %}{{ queryParams }}" title="Les thérapeutes en {{ therapy.name }}">{{ therapy.name }}</a>
         {% endfor %}
         {% endif %}
       </div>

@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% load tags %}
+
+{% block meta_title %}Thérapeutes agréés ASCA autour de Genève{% endblock %}
+
+{% block meta_description %}Prendre rendez-vous avec un thérapeute à Genève : accupressing, nutritionistes, massothérapeutes à Genève{% endblock %}
+
+{% block content %}
+{{ therapist }}
+{% if therapists %}
+<div class=wrapper>
+  <section id=content>
+    <h1>
+      {% if q %}Thérapeutes pour "{{ q }}"
+      {% else %}Les thérapeutes du réseau{% endif %}
+    </h1>
+    <div class=wrapper>
+      {% for therapist in therapists %}
+      <article id="{{ therapist.id }}">
+        <h1>{{ therapist.therapy }}</h1>
+        {% avatar therapist %}
+        <div>
+          <h2>{{ therapist.name }}</h2>
+          <p>{{ therapist.city }}</p>
+          <p class=description>{{ therapist.description | truncatechars:120 }}</p>
+        </div>
+        <footer>
+          {% for agreement in therapist.agreements %}
+          <span class=tag title="{{ therapist.therapy }} agréé {{ agreement }}">{{ agreement | upper }}</span>
+          {% endfor %}
+        </footer>
+        <a href=/{{ therapist.slug }}/{{ therapist.id }} title="{{ therapist.name }} est {{ therapist.practices.first.name }} à {{ therapist.city }}">Voir ce {{ therapist.practices.0.name }} à {{ therapist.city }}</a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  <aside>
+    <div id="map"></div>
+  </aside>
+</div>
+
+{% else %}
+  <section class=no-result>
+    <p>Le système n'a pas pu trouver un thérapeute automatiquement expert dans les "{{ q }}".
+      <a href="mailto:contact@terrapeutes.com?subject=Recherche un thérapeute en {{ q }}">Partagez-nous votre besoin</a>
+      et nous vous indiquerons des thérapeutes adéquats.
+    </p>
+  </section>
+{% endif %}
+
+<style>
+  .wrapper {
+    display: flex;
+  }
+
+  .no-result {
+    padding: 10rem;
+  }
+
+  aside {
+    width: 20rem;
+  }
+
+  #content {
+    width: calc(100% - 20rem);
+  }
+  #content >.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    flex-direction: row;
+  }
+
+  #map {
+    min-height: 300px;
+    height: 100vh;
+    position: sticky !important;
+    top: 0;
+  }
+
+  article {
+    position: relative;
+    min-width: 22rem;
+    display: inline-grid;
+    grid-template:
+      'avatar title'
+      'avatar info'
+      'avatar footer'
+      / auto 1fr;
+    grid-gap: 1rem;
+    background-color: #fff;
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    flex: 1 200px;
+    margin: .5rem;
+  }
+  article p {
+    margin: .3rem 0;
+  }
+  article h1,
+  article h2 {
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+  }
+  article h1 {
+    font-weight: bold;
+    font-size: 1.1rem;
+    grid-area: title;
+  }
+  article h2 {
+    font-size: 1rem;
+  }
+  article .avatar {
+    grid-area: avatar;
+    height: 12rem;
+  }
+  article picture {
+    overflow: hidden;
+  }
+  article picture img {
+    grid-area: img;
+    width: 200px;
+    height: 100%;
+    object-fit: cover;
+  }
+  article > div {
+    grid-area: info;
+  }
+  article > footer {
+    grid-area: footer;
+  }
+  article .description {
+    font-size: .9em;
+    line-height: 1.2;
+  }
+  article > footer > div {
+    margin-top: .7rem;
+    padding-top: .7rem;
+    border-top: 1px dashed #eee;
+  }
+  article a {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-indent: -999%;
+  }
+  article a:hover {
+    box-shadow: 1px 1px 5px rgba(176, 176, 176, .3)
+  }
+
+  .leaflet-popup-content h4,
+  .leaflet-popup-content h5,
+  .leaflet-popup-content p {
+    margin: .1rem !important;
+  }
+  .leaflet-popup-content {
+    display: flex;
+  }
+  .leaflet-popup-content img {
+    width: 100%;
+  }
+  .leaflet-popup-content aside {
+    width: 100px;
+    padding: .3rem;
+  }
+  .leaflet-popup-content h5,
+  .leaflet-popup-content .button {
+    font-size: .7rem;
+    padding: .3rem 1rem;
+    text-decoration: none;
+  }
+</style>
+{% if therapists %}
+  {% map latlng='46.5, 6.5' zoom=9 %}
+<script>
+  const therapists = [
+    {% for therapist in therapists %}
+      {% if therapist.offices.first.latlng.0 %}
+      {
+        id: "{{therapist.id}}",
+        name: "{{therapist.name}}",
+        therapy: "{{therapist.practices.first.name}}",
+        label: "{{therapist.name}} — {{ therapist.practices.first }}",
+        latlng: [{{ therapist.offices.first.latlng.0}}, {{therapist.offices.first.latlng.1 }}],
+        url: "{{therapist.slug}}/{{therapist.id}}",
+        photo: `{{ therapist.photo }}`,
+      },
+      {% endif %}
+    {% endfor %}
+  ]
+  const markers = therapists.map(therapist => {
+    const marker = L.marker(therapist.latlng)
+    marker.bindPopup(`
+      <aside>
+        <img src="${ therapist.photo }">
+      </aside>
+      <section>
+        <h4>${ therapist.name }</h4>
+        <h5>${ therapist.therapy }</h5>
+        <a class="button primary" href="${ therapist.url }"><i class="far fa-id-card"></i> Consulter</a>
+      </section>
+    `)
+    marker._therapist = therapist
+    return marker
+  })
+  const markersGroup = L.featureGroup(markers)
+  map.fitBounds(markersGroup.getBounds())
+  markersGroup.addTo(map)
+</script>
+{% endif %}
+
+{% endblock %}

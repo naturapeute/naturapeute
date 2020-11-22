@@ -57,7 +57,7 @@ class Therapist(models.Model):
     modification_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.firstname} {self.lastname}"
+        return self.name
 
     @property
     def slug0(self):
@@ -66,6 +66,10 @@ class Therapist(models.Model):
     @property
     def slug1(self):
         return self.slug.split("/")[1]
+
+    @property
+    def name(self):
+        return f"{self.firstname} {self.lastname}"
 
 
 # const TherapistPendingSchema = new mongoose.Schema({
