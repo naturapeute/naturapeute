@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView, DetailView, ListView
+from django.views.generic import TemplateView, ListView, View
 
 from naturapeute.models import Therapist
 
@@ -15,13 +15,14 @@ class HomeView(TemplateView):
         return context
 
 
-class TherapistView(DetailView):
+class TherapistView(TemplateView):
     template_name = "therapist.html"
 
-    def getobject(self, **kwargs):
-        import ipdb; ipdb.set_trace()
+    def get_context_data(self, **kwargs):
         slug = f"{self.kwargs['slug0']}/{self.kwargs['slug1']}"
-        return self.get_queryset().get(slug=slug)
+        return {
+            "therapist": Therapist.objects.get(slug=slug)
+        }
 
 
 class TherapistsView(ListView):

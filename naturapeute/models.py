@@ -71,6 +71,18 @@ class Therapist(models.Model):
     def name(self):
         return f"{self.firstname} {self.lastname}"
 
+    @property
+    def languages_verbose(self):
+        trans = {
+            "en": "anglais",
+            "fr": "français",
+            "de": "allemand",
+            "ru": "russe",
+            "it": "italien",
+            "es": "espagnol",
+        }
+        return [trans[l] for l in self.languages]
+
 
 # const TherapistPendingSchema = new mongoose.Schema({
 #   slug: { type: String, unique: true },

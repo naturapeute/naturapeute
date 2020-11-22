@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load tags %}
+
+{% block meta_title %}{{ therapist.name }}, {{ therapist.practices.first.name }} à {{ therapist.city }}{% endblock %}
+
+{% block meta_description %}{{ therapist.name }} est thérapeute agréé {{ therapist.agreements|join:', ' }} en {{ therapist.practices.first.name }} à {{ therapist.city }}.
+{{ therapist.description|truncatechars:150 }}{% endblock %}
+
+{% block content %}
+<article>
+  <div>
+    <section id=identity>
+      {% avatar therapist %}
+      <h1>{{ therapist.practices.first.name }} à {{ therapist.city }}</h1>
+      <h2>{{ therapist }}</h2>
+      <p>
+        {% for practice in therapist.practices.all %}
+          <span class=tag title="{{ practice.name }} à {{ therapist.city }}">{{ practice.name }}</span>
+        {% endfor %}
+      </p>
+      <p id=agreements title="{{ therapist.practices.first.name }} agréé {{ therapist.agreements|join:', ' }}">Thérapeute professionnel
+        {% if therapist.agreements %}agréé {{ therapist.agreements|join:', ' | upper }}
+        {% else %}diplomé
+        {% endif %}
+      </p>
+    </section>
+
+    <section>
+      <h3>À propos</h3>
+      <p>
+        {{ therapist.description }}
+      </p>
+      <p>
+        {{ therapist }} parle {{ therapist.languages_verbose|join:', ' }}
+      </p>
+    </section>
+
+    <section>
+      <h3>Paiement</h3>
+      {{ therapist.price }}
+      <p>Moyens de paiement : {{ therapist.payment_types|join:', ' }}</p>
+    </section>
+
+    <section>
+      <h3>Adresse</h3>
+      <address>
+        {% with office=therapist.offices.first %}
+        {{ office.street }}<br>
+        {{ office.zipcode }} {{ office.city }}
+        {% endwith %}
+      </address>
+      <div id="map"></div>
+    </section>
+
+    {% if therapist.pictures %}
+    <section>
+      <h3>Le cabinet</h3>
+      {% for picture in therapist.pictures %}
+      <img src={{ picture }} height=200>
+      {% endfor %}
+    </section>
+    {% endif %}
+  </div>
+
+  <aside>
+    <ul>
+      {% if therapist.socials.website %}
+      <li><i class="fa fa-desktop"></i> <a href={{ therapist.socials.website }} target=_blank>Site web</a></li>
+      {% endif %}
+      {% if therapist.socials.facebook %}
+      <li><i class="fab fa-facebook-square"></i> <a href={{ therapist.socials.facebook }} target=_blank>Page Facebook</a></li>
+      {% endif %}
+    </ul>
+
+    <ul id=contactInfos class=hidden>
+      <li><a href="tel:{{ therapist.phone }}" title="Contacter {{ therapist }} par téléphone"><i class="fa fa-phone fa-flip-horizontal"></i> Tel: {{ therapist.phone }}</a></li>
+      <li><i class="fa fa-envelope"></i> <a href="mailto:{{ therapist.email }}" title="Contacter {{therapist}} par email">Envoyer un email</a></li>
+    </ul>
+    <button class=primary id=contactButton><i class="fa fa-phone fa-flip-horizontal"> </i> Contacter</button>
+    <a class=button href={{ request.path }}vcf><i class="far fa-address-card"></i> Télécharger la vCard</a>
+  </aside>
+</article>
+
+<style>
+  article {
+    display: flex;
+    justify-content: space-between;
+    max-width: 60rem;
+    margin: 2rem auto;
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 1px 1px 3px rgba(188, 188, 188, .3);
+  }
+  article > div {
+    flex-grow: 1;
+  }
+
+  #agreements {
+    font-size: .8rem;
+  }
+
+  section:not(:last-of-type) {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  aside {
+    min-width: 300px;
+  }
+
+  #map {
+    width: 100%;
+    height: 300px;
+  }
+
+  #identity .avatar {
+    float: right;
+    margin: 0 1rem 1rem;
+    height: 300px;
+  }
+  .avatar img {
+    max-height: 100%;
+  }
+
+  h1, h2, h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.4em;
+    font-weight: bold;
+  }
+  h2 {
+    font-size: 1.2em;
+  }
+  h3 {
+    font-size: 1em;
+    margin-bottom: .5rem;
+  }
+  .hidden {
+    display: none;
+  }
+  #contactButton {
+    width: 100%;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  aside {
+    margin-left: 2rem;
+  }
+  aside ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  aside button,
+  aside .button {
+    margin-top: 1rem;
+    width: 100%;
+  }
+</style>
+
+  {# After CSS for map sizing reasons #}
+  {% with lat=therapist.offices.first.latlng.0|stringformat:"s" lng=therapist.offices.first.latlng.1|stringformat:"s" %}
+  {% with latlng=lat|add:", "|add:lng %}
+
+    {% map latlng=latlng zoom=9 %}
+    <script>
+      document.querySelector('#contactButton').addEventListener('click', () => {
+        document.querySelector('#contactInfos').classList.remove('hidden')
+      })
+      const marker = L.marker([{{latlng}}]).addTo(map)
+    </script>
+  {% endwith %}
+  {% endwith %}
+{% endblock %}

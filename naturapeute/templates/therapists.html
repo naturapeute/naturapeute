@@ -29,7 +29,7 @@
           <span class=tag title="{{ therapist.therapy }} agréé {{ agreement }}">{{ agreement | upper }}</span>
           {% endfor %}
         </footer>
-        <a href=/{{ therapist.slug }}/{{ therapist.id }} title="{{ therapist.name }} est {{ therapist.practices.first.name }} à {{ therapist.city }}">Voir ce {{ therapist.practices.0.name }} à {{ therapist.city }}</a>
+        <a href="{% url 'therapist' therapist.slug0 therapist.slug1 %}" title="{{ therapist.name }} est {{ therapist.practices.first.name }} à {{ therapist.city }}">Voir ce {{ therapist.practices.0.name }} à {{ therapist.city }}</a>
       </article>
       {% endfor %}
     </div>
