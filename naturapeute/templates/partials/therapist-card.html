@@ -1,0 +1,23 @@
+{% load tags %}
+
+<article class="therapist-card" id="{{ therapist.id }}">
+<h1>{{ therapist.name }}</h1>
+{% avatar therapist %}
+<div>
+    <p>{{ therapist.city }}</p>
+    <div class=therapies-list>
+    {% if therapists %}
+        {% for therapy in therapist.therapies %}
+            <a class=therapy href="{% url 'therapist' therapist %}" title="Les thérapeutes en {{ therapy.name }}">{{ therapy.name }}</a>
+        {% endfor %}
+    {% endif %}
+    </div>
+    <p class=description>{{ therapist.description | truncatechars:120 }}</p>
+</div>
+<footer>
+    {% for agreement in therapist.agreements %}
+    <span class=tag title="{{ therapist.therapy.name }} agréé {{ agreement }}">{{ agreement | upper }}</span>
+    {% endfor %}
+</footer>
+<a class=card-link href="{% url 'therapist' therapist.slug0 therapist.slug1 %}" title="{{ therapist.name }} est {# therapist.therapies_name | join(', ') #} à {{ therapist.city }}">Voir ce {{ therapist.therapies }} à {{ therapist.city }}</a>
+</article>

@@ -59,6 +59,14 @@ class Therapist(models.Model):
     def __str__(self):
         return f"{self.firstname} {self.lastname}"
 
+    @property
+    def slug0(self):
+        return self.slug.split("/")[0]
+
+    @property
+    def slug1(self):
+        return self.slug.split("/")[1]
+
 
 # const TherapistPendingSchema = new mongoose.Schema({
 #   slug: { type: String, unique: true },

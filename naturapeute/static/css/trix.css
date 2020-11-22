@@ -1,0 +1,11 @@
+/*
+Override Trix editor default CSS
+*/
+
+.attachment {
+  margin: 0;
+  display: inline;
+}
+.attachment figcaption {
+  display: none;
+}

@@ -2,6 +2,8 @@ deploy:
 	ssh naturapeute "\
 		cd admin && \
 		git pull && \
+		source venv/bin/activate && \
+		pip install -r requirements.txt && \
 		echo 'updated'"
 	make restart-server
 

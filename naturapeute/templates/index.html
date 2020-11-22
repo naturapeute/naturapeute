@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% load tags %}
+
+{% block content %}
+{% comment %}
+  <article id=event>
+  <figure>
+    <img src=/img/event/detox/pot.jpg alt="Les ingrédients de la détox">
+  </figure>
+  <div>
+    <h1>Conférence le 17 mars 2020, à Génève</h1>
+    <h2>Bien préparer sa « détox » de printemps.</h2>
+  </div>
+  <aside class=row>
+    <a class="button primary" href="https://www.weezevent.com/bien-reussir-sa-detox-de-printemps" target=_blank>Réservation</a>
+    <a class="button" href="https://naturapeute.ch/journal/bien-preparer-sa-detox-de-printemps">Informations</a>
+  </aside>
+</article>
+{% endcomment %}
+
+<article id=search>
+  <div>
+
+    <h1>Trouvez un thérapeute</h1>
+    <form action="/therapeutes">
+      <label>Vous avez un symptôme spécifique ?</label>
+      <div class=row>
+        <input type=search name=symptom placeholder="Ex: troubles du sommeil…">
+        <button class=primary><i class="fas fa-search" title="Trouver les thérapeutes intervenant sur ces symptômes"></i></button>
+      </div>
+    </form>
+
+    <form action="/therapeutes">
+      <label>Vous cherchez un pratique thérapeutique ?</label>
+      <div class=row>
+        <input type=search name=therapy list="therapies" placeholder="Ex: naturopathie">
+        <datalist id=therapies>
+          {% for therapy in therapies %}
+          <option value="{{ therapy.name }}">
+          {% endfor %}
+        </datalist>
+        <button class=primary><i class="fas fa-search" title="Trouver les thérapeutes intervenant sur ces symptômes"></i></button>
+      </div>
+    </form>
+
+    <p>Naturapeute est le réseau des <strong>thérapeutes en Suisse</strong>. Quelques soient vos symptômes,
+    il y a toujours un <strong>thérapeute professionnel</strong> à proximité.</p>
+  </div>
+</article>
+
+<article id=provider>
+  <h2 class="therapist"><i class="fas fa-user-nurse"></i> Espace thérapeutes</h2>
+  <p>
+    Vous êtes thérapeute et vous exercez en Suisse ou à proximité ?<br>
+    Vous pouvez <strong>rejoindre les {{ therapistsCount }} autres thérapeutes gratuitement</strong> et bénéficier d'un réseau bienveillant accompagnant les <strong>professionnels de la santé</strong>.
+  </p>
+  <aside>
+    <a href="https://pro.naturapeute.ch/join.html" target="_blank" class="primary button calltoaction" title="Réseau des thérapeutes en Suisse">
+      Rejoindre les {{ therapistsCount }} thérapeutes du réseau
+    </a>
+  </aside>
+  <section>
+    <h3>Les thérapeutes ayant récemment rejoint le réseau</h3>
+    <div class=therapists>
+      {% for therapist in therapists %}
+        {% therapist_card therapist %}
+      {% endfor %}
+    </div>
+  </section>
+</article>
+
+<article id=partnership>
+  <h2 class="partner iconed">Espace partenaires</h2>
+  <nav>
+    <a href=https://esclarmonde.net target="_blank">
+      <img src="https://esclarmonde.net/wp-content/themes/esclarmonde/img/logo_w.png" id=logo-esclarmonde alt="Ecole d'Esclarmonde">
+    </a>
+    <a href=https://www.satoriz.fr/magasin-bio/satoriz-thoiry/ target="_blank">
+      <img src="https://www.satoriz.fr/wp-content/themes/Satoriz/images/logo.png" id=logo-satoriz alt="Satoriz Thoiry">
+    </a>
+  </nav>
+  <p>
+    Vous êtes une association, une école, un collectif ou une entité soigneuse de la santé, de l'éducation et des thérapies complémentaires ?
+  </p>
+  <p>
+    Vous souhaiteriez établir un partenariat, participer à des événements et communiquer avec notre réseau ?
+    Nous sommes joignables et ouverts pour échanger et convenir d'un partenariat.
+  </p>
+  <aside>
+    <a href="mailto:contact@naturapeute.ch?subject=Partenariat" class="primary button calltoaction">Prendre contact</a>
+  </aside>
+</article>
+
+<style>
+  main {
+    position: relative;
+  }
+  main > section,
+  main > article {
+    padding: 5rem 14rem;
+  }
+
+  main nav a {
+    display: inline-block;
+    margin-right: 1rem;
+    color: #777;
+    font-size: 1em;
+    text-decoration: none;
+  }
+
+  #event {
+    padding: 0;
+    width: 800px;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+    margin: 1rem auto;
+  }
+  #event figure {
+    width: 800px;
+    margin: 0;
+    margin-top: -140px;
+  }
+  #event img {
+    width: 100%;
+  }
+  #event div {
+    background: rgba(255, 255, 255, .8);
+    position: absolute;
+    top: 20px;
+    left: 0;
+    padding: .5rem 1rem;
+  }
+  #event h1,
+  #event h2 {
+    font-size: 1.2rem;
+    margin: 0 .1rem;
+    padding: 0 .1rem;
+    text-align: center;
+  }
+  #event aside {
+    position: absolute;
+    bottom: .2rem;
+    left: 100px;
+  }
+
+  #search {
+    background-image: url('/static/img/home3.jpg');
+    background-size: cover;
+    min-height: 600px;
+    color: #555;
+    filter: contrast(90%);
+    transition: all .3s;
+  }
+  #search:hover {
+    filter: contrast(110%);
+  }
+  #search > div {
+    background-color: rgba(255, 255, 255, .8);
+    padding: 4.5rem;
+    display: inline-block;
+    border-radius: .3rem;
+    box-shadow: 0 0 8px rgba(144, 144, 144, .3);
+  }
+  #search p {
+    margin-top: 2rem;
+    color: #777;
+    font-size: .8rem;
+  }
+
+  #search input {
+    padding: .7rem;
+    margin-right: 0;
+    border-color: rgb(102, 102, 102, .6);
+    border-right-width: 0;
+    border-radius: .5rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  #search button {
+    border: 1px solid #888;
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  #therapists {
+    background-image: url('/static/img/therapist.svg')
+  }
+
+  .therapists {
+    display: flex;
+    overflow: scroll;
+  }
+
+  #therapies {
+    color: #555;
+    font-size: .8rem;
+  }
+
+  #partnership {
+    display: inline-flex;
+    flex-flow: column;
+  }
+
+  #partnership {
+    background-color: #68b246;
+    color: white;
+  }
+  #partnership nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin: 1rem 0;
+  }
+  #partnership h1,
+  #partnership h2 {
+    background-color: #68b246;
+    color: white;
+  }
+  #partnership .button {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+  }
+
+  .partner {
+    background-image: url('/static/img/balloons.svg');
+  }
+
+  @media screen and (max-width: 900px) {
+    main > article,
+    main > section {
+      padding: .8rem;
+    }
+
+    main > section h1,
+    main > section h2,
+    main > section h2.iconed
+    {
+      text-align: center;
+      padding-left: 0;
+      background: none;
+    }
+
+    #therapies a {
+      display: block;
+    }
+
+    #event {
+      width: auto;
+      height: 280px;
+    }
+    #event aside {
+      left: calc((100% - 312px) / 2);
+    }
+
+    #partnership nav {
+      flex-direction: column;
+    }
+
+    #search > div {
+      padding: .3rem;
+    }
+    #search form .row {
+      flex-direction: column;
+    }
+    #search input {
+      border-right-width: 1px;
+      border-bottom-right-radius: .5rem;
+      border-top-right-radius: .5rem;
+    }
+</style>
+{% endblock %}

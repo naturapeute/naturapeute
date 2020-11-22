@@ -1,0 +1,73 @@
+.therapist-card {
+  position: relative;
+  min-width: 22rem;
+  display: inline-grid;
+  grid-template:
+    'avatar title'
+    'avatar info'
+    'avatar footer'
+    / auto 1fr;
+  grid-gap: 1rem;
+  background-color: #fff;
+  padding: 1rem;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  flex: 1 200px;
+  margin: .5rem;
+}
+.therapist-card p {
+  margin: .3rem 0;
+}
+.therapist-card h1,
+.therapist-card h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 1em;
+}
+.therapist-card h1 {
+  font-weight: bold;
+  font-size: 1.1rem;
+  grid-area: title;
+}
+.therapist-card h2 {
+  font-size: 1rem;
+}
+.therapist-card .avatar {
+  grid-area: avatar;
+  height: 12rem;
+}
+.therapist-card picture {
+  overflow: hidden;
+}
+.therapist-card picture img {
+  grid-area: img;
+  width: 200px;
+  height: 100%;
+  object-fit: cover;
+}
+.therapist-card > div {
+  grid-area: info;
+}
+.therapist-card > footer {
+  grid-area: footer;
+}
+.therapist-card .description {
+  font-size: .9em;
+  line-height: 1.2;
+}
+.therapist-card > footer > div {
+  margin-top: .7rem;
+  padding-top: .7rem;
+  border-top: 1px dashed #eee;
+}
+.therapist-card a.card-link {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  text-indent: -999%;
+}
+.therapist-card a:hover {
+  box-shadow: 1px 1px 5px rgba(176, 176, 176, .3)
+}

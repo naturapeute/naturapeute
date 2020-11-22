@@ -13,14 +13,9 @@ id_registry = {}
 def import_practices():
     Practice.objects.all().delete()
     for therapy in db.therapies.find():
-        if not therapy["name"]:
-            continue
-        try:
-            practice = Practice.objects.create(
-                name=therapy["name"], slug=therapy["slug"]
-            )
-        except IntegrityError:
-            continue
+        practice = Practice.objects.create(
+            name=therapy["name"], slug=therapy["slug"]
+        )
         airtable_registry[therapy.get("airtableId") or str(therapy["_id"])] = practice
         id_registry[str(therapy["_id"])] = practice
 
@@ -35,14 +30,11 @@ def import_symptoms():
     for symptom in db.symptoms.find():
         if len(symptom["synonyms"]) == 1:
             symptom["synonyms"] = " ".split(symptom["synonyms"][0])
-        try:
-            instance = Symptom.objects.create(
-                name=symptom["name"],
-                synonyms=[x.strip() for x in symptom["synonyms"]],
-                keywords=symptom["keywords"],
-            )
-        except IntegrityError:
-            continue
+        instance = Symptom.objects.create(
+            name=symptom["name"],
+            synonyms=[x.strip() for x in symptom["synonyms"]],
+            keywords=symptom["keywords"],
+        )
         id_registry[str(symptom["_id"])] = instance
         airtable_registry[symptom["airtableId"]] = instance
     for symptom in db.symptoms.find():
@@ -69,23 +61,22 @@ def import_therapists():
             languages=t["languages"],
             photo=t.get("photo"),
             socials=t.get("socials"),
-            # practices=[id_registry[k] for k in t["therapies"] if k in id_registry],
             agreements=t["agreements"],
             payment_types=t["paymentTypes"],
-            # symptoms=[id_registry[s] for s in t["symptoms"] if s in id_registry],
             creation_date=t["creationDate"],
         )
-        [
-            therapist.practices.add(id_registry[k])
-            for k in t["therapies"]
-            if k in id_registry
-        ]
-        [
-            therapist.symptoms.add(id_registry[k])
-            for k in t["symptoms"]
-            if k in id_registry
-        ]
         therapist.save()
+
+        [
+            therapist.practices.add(id_registry[str(k)])
+            for k in t["therapies"]
+            if str(k) in id_registry
+        ]
+        [
+            therapist.symptoms.add(id_registry[str(k)])
+            for k in t["symptoms"]
+            if str(k) in id_registry
+        ]
 
         for o in t["offices"]:
             office = Office.objects.create(
@@ -97,11 +88,11 @@ def import_therapists():
                 latlng=o.get("location")["coordinates"],
                 therapist=therapist,
             )
-        # try:
-        #     therapist.save()
-        # except Exception as e:
-        #     import ipdb; ipdb.set_trace()
-        #     print(e, t)
+
+        therapist.save()
+
+    print("therapists imported")
+
 
 
 def import_all():
