@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # custom
+    'django.contrib.postgres',
     'django_better_admin_arrayfield',
     'naturapeute',
 ]

@@ -4,3 +4,4 @@ psycopg2-binary
 pymongo  # only for importing from old mongo
 Pillow
 gunicorn
+vobject

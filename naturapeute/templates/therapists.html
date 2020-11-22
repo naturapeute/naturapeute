@@ -6,12 +6,11 @@
 {% block meta_description %}Prendre rendez-vous avec un thérapeute à Genève : accupressing, nutritionistes, massothérapeutes à Genève{% endblock %}
 
 {% block content %}
-{{ therapist }}
 {% if therapists %}
 <div class=wrapper>
   <section id=content>
     <h1>
-      {% if q %}Thérapeutes pour "{{ q }}"
+      {% if request.GET.symptom %}{{therapists.count}} thérapeutes peuvent intervenir en "{{ request.GET.symptom }}"
       {% else %}Les thérapeutes du réseau{% endif %}
     </h1>
     <div class=wrapper>
@@ -21,8 +20,12 @@
         {% avatar therapist %}
         <div>
           <h2>{{ therapist.name }}</h2>
+          <h3>{{ therapist.practices.first.name }}</h3>
           <p>{{ therapist.city }}</p>
-          <p class=description>{{ therapist.description | truncatechars:120 }}</p>
+          {% if therapist.description %}
+          <p class=description>{{ therapist.description | truncatechars:120 }}
+          {% endif %}
+          </p>
         </div>
         <footer>
           {% for agreement in therapist.agreements %}
@@ -105,12 +108,16 @@
     font-size: 1em;
   }
   article h1 {
-    font-weight: bold;
     font-size: 1.1rem;
     grid-area: title;
   }
   article h2 {
     font-size: 1rem;
+  }
+  article h3 {
+    font-size: .8rem;
+    padding: .3rem 0;
+    font-weight: bold;
   }
   article .avatar {
     grid-area: avatar;

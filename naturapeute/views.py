@@ -3,7 +3,7 @@ from django.shortcuts import redirect, reverse
 from django.views.generic.base import RedirectView
 import vobject
 
-from naturapeute.models import Therapist
+from .models import Therapist, Symptom
 
 
 class HomeView(TemplateView):
@@ -16,6 +16,23 @@ class HomeView(TemplateView):
         context["therapistsCount"] = therapists.count()
         context["therapists"] = therapists[:5]
         return context
+
+
+class TherapistsView(ListView):
+    template_name = "therapists.html"
+    model = Therapist
+    context_object_name = "therapists"
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        params = dict(self.request.GET)
+        symptom = self.request.GET.get("symptom")
+        if symptom:
+            symptoms = Symptom.objects.search(symptom)
+            qs = qs.filter(symptoms__in=symptoms).distinct()
+        return qs
+
+
 
 
 class TherapistView(TemplateView):
@@ -40,12 +57,6 @@ class TherapistVcardView(View):
         card.add("adr")
         card.ard.value = vobject.vcard.Address(street=office.street, city=office.city, code=office.zipcode, country=office.country)
         raise Error("WIP Implementing fields and returning response")
-
-
-class TherapistsView(ListView):
-    template_name = "therapists.html"
-    model = Therapist
-    context_object_name = "therapists"
 
 
 class TherapistOldView(RedirectView):
