@@ -31,18 +31,28 @@
       </div>
     </form>
 
-    <form action={% url 'therapists' %}>
+    <form id="practice-form" action={% url 'therapists' %}>
       <label>Vous cherchez un pratique thérapeutique ?</label>
       <div class=row>
-        <input type=search name=therapy list="therapies" placeholder="Ex: naturopathie">
-        <datalist id=therapies>
-          {% for therapy in therapies %}
-          <option value="{{ therapy.name }}">
+        <input type=search name=practice list="practices" placeholder="Ex: Naturopathie">
+        <datalist id=practices>
+          {% for practice in practices %}
+          <option value="{{ practice.name }}">
           {% endfor %}
         </datalist>
-        <button class=primary><i class="fas fa-search" title="Trouver les thérapeutes intervenant sur ces symptômes"></i></button>
+        <button disabled class=primary><i class="fas fa-search" title="Trouves les thérapeutes pratiquant ces thérapies"></i></button>
       </div>
     </form>
+    <script>
+      const form = document.querySelector('#practice-form')
+      const submitter = form.querySelector('button')
+      form.querySelector('[name=practice]').addEventListener('change', (event) => {
+        const value = event.target.value
+        const options = form.querySelectorAll('#practices option')
+        const values = Array.from(options).map(o => o.value)
+        submitter.disabled = !values.includes(value)
+      })
+    </script>
 
     <p>Naturapeute est le réseau des <strong>thérapeutes en Suisse</strong>. Quelques soient vos symptômes,
     il y a toujours un <strong>thérapeute professionnel</strong> à proximité.</p>

@@ -17,15 +17,29 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path
 
-from .views import HomeView, TherapistView, TherapistsView, TherapistOldView
-
+from .views import (
+    HomeView,
+    TherapistView,
+    TherapistsView,
+    TherapistOldView,
+    TherapistVcardView,
+)
 
 
 urlpatterns = [
-    path('', HomeView.as_view()),
-    path('therapeutes/', TherapistsView.as_view(), name="therapists"),
-    path('therapeutes/<slug0>/<slug1>/', TherapistView.as_view(), name="therapist"),
-    path('therapeutes/<slug0>/<slug1>/<oldid>/', TherapistOldView.as_view(), name="therapist_redirect"),
-    path('admin/', admin.site.urls),
+    path("", HomeView.as_view()),
+    path("therapeutes/", TherapistsView.as_view(), name="therapists"),
+    path("therapeutes/<slug0>/<slug1>/", TherapistView.as_view(), name="therapist"),
+    path(
+        "therapeutes/<slug0>/<slug1>/vcf/",
+        TherapistVcardView.as_view(),
+        name="therapist_vcf",
+    ),
+    path(
+        "therapeutes/<slug0>/<slug1>/<oldid>/",
+        TherapistOldView.as_view(),
+        name="therapist_redirect",
+    ),
+    path("admin/", admin.site.urls),
 ]
 urlpatterns += staticfiles_urlpatterns()

@@ -10,7 +10,8 @@
 <div class=wrapper>
   <section id=content>
     <h1>
-      {% if request.GET.symptom %}{{therapists.count}} thérapeutes peuvent intervenir en "{{ request.GET.symptom }}"
+      {% if request.GET.symptom %}{{therapists.count}} thérapeutes peuvent intervenir en {{ request.GET.symptom }}
+      {% elif request.GET.practice %}{{therapists.count}} thérapeutes en {{ request.GET.practice }}
       {% else %}Les thérapeutes du réseau{% endif %}
     </h1>
     <div class=wrapper>

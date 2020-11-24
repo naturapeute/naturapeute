@@ -1,9 +1,10 @@
 from django.views.generic import TemplateView, ListView, View
-from django.shortcuts import redirect, reverse
 from django.views.generic.base import RedirectView
+from django.shortcuts import redirect, reverse
+from django.http import HttpResponse
 import vobject
 
-from .models import Therapist, Symptom
+from .models import Therapist, Symptom, Practice
 
 
 class HomeView(TemplateView):
@@ -15,6 +16,7 @@ class HomeView(TemplateView):
         therapists = Therapist.objects.all()
         context["therapistsCount"] = therapists.count()
         context["therapists"] = therapists[:5]
+        context["practices"] = Practice.objects.all()
         return context
 
 
@@ -26,13 +28,16 @@ class TherapistsView(ListView):
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
         params = dict(self.request.GET)
-        symptom = self.request.GET.get("symptom")
-        if symptom:
-            symptoms = Symptom.objects.search(symptom)
-            qs = qs.filter(symptoms__in=symptoms).distinct()
+        symptom_name = self.request.GET.get("symptom")
+        if symptom_name:
+            symptoms = Symptom.objects.search(symptom_name)
+            qs = qs.filter(symptoms=symptoms).distinct()
+        practice_name = self.request.GET.get("practice")
+        if practice_name:
+            practice = Practice.objects.get(name=practice_name)
+            if practice:
+                qs = qs.filter(practices=practice).distinct()
         return qs
-
-
 
 
 class TherapistView(TemplateView):
@@ -44,18 +49,21 @@ class TherapistView(TemplateView):
 
 
 class TherapistVcardView(View):
-    def get(self, **kwargs):
+    def get(self, *args, **kwargs):
         card = vobject.vCard()
         therapist = Therapist.objects.get(
             slug=f"{self.kwargs['slug0']}/{self.kwargs['slug1']}"
         )
-        office = therapist.offices[0]
+        office = therapist.offices.first()
         card.add("n")
-        card.n.value = vobject.vcard.Name(family="Harris", given="Jeffrey")
+        card.n.value = vobject.vcard.Name(family=therapist.lastname, given=therapist.firstname)
         card.add("email")
         card.email.value = therapist.email
         card.add("adr")
-        card.ard.value = vobject.vcard.Address(street=office.street, city=office.city, code=office.zipcode, country=office.country)
+        card.adr.value = vobject.vcard.Address(street=office.street, city=office.city, code=office.zipcode, country=office.country)
+        response = HttpResponse(str(card), content_type="text/vcard")
+        response["Content-Disposition"] = f'attachment; filename="{therapist}.vcf"'
+        return response
         raise Error("WIP Implementing fields and returning response")
 
 
