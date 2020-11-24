@@ -4,10 +4,7 @@ from django.contrib.postgres.fields import HStoreField, JSONField
 from django.contrib.postgres.search import SearchVector
 from django_better_admin_arrayfield.models.fields import ArrayField
 
-
-BLACKLIST_WORDS = ['alors', 'aucun', 'aussi', 'autre', 'avant', 'avec', 'avoir', 'bas', 'haut', 'bon', 'car', 'cela', 'ces', 'ceux', 'chaque', 'comme', 'comment', 'dans', 'des', 'dedans', 'dehors', 'depuis', 'devrait', 'doit', 'donc', 'debut', 'elle', 'elles', 'encore', 'essai', 'est', 'fait', 'faites', 'fois', 'font', 'hors', 'ici', 'ils', 'juste', 'les', 'leur', 'maintenant', 'mais', 'mes', 'mien', 'moins', 'mon', 'mot', 'meme', 'ni', 'notre', 'nous', 'par', 'parce', 'pas', 'peut', 'peu', 'plupart', 'pour', 'pourquoi', 'quand', 'que', 'quel', 'qui', 'sans', 'ses', 'seulement', 'sien', 'son', 'sont', 'sous', 'soyez', 'sujet', 'sur', 'tandis', 'tellement', 'tels', 'tes', 'ton', 'tous', 'tout', 'trop', 'tres', 'voient', 'vont', 'votre', 'vous', 'etaient', 'etat', 'etions', 'ete', 'les', 'des', 'aux', 'dans', 'pour', 'lie', 'liee',
-"accident", "baisse", "bobo", "brulure", "chronique", "chute", "crise", "diminution", "douleur", "douloureuse", "douloureux", "dysfonctionnement", "etat", "fievre", "hypersensibilite", "infection", "lesion", "mal", "maladie", "malaise", "manque", "organe", "perte", "probleme", "reaction", "rouge", "rythme", "sensation", "syndrome", "trouble", "trou", "dessus", "dessous", "fais"]
-
+from .utils import normalize_text
 
 class Practice(models.Model):
     name = models.CharField(max_length=50, unique=True, blank=False)
@@ -16,19 +13,24 @@ class Practice(models.Model):
     def __str__(self):
         return str(self.name)
 
+    class Meta:
+        ordering = ["slug"]
+
 
 class SymptomManager(models.Manager):
 
     def search(self, terms):
-        cleaned = []
-        for t in terms.split(" "):
-            t = slugify(t.strip())
-            if not t in BLACKLIST_WORDS:
-                cleaned.append(t)
-
+        terms = normalize_text(terms).split(' ')
+        replaced = []
+        for t in terms:
+            synonym = Synonym.objects.annotate(
+                search=SearchVector("name", "words", config="french"),
+            ).filter(search=t)
+            replaced.append(synonym.first().name if synonym.first() else t)
         return Symptom.objects.annotate(
             search=SearchVector("name", "keywords", config="french"),
-        ).filter(search=' '.join(cleaned))
+        ).filter(search=' '.join(replaced))
+
 
 
 class Symptom(models.Model):
@@ -41,6 +43,28 @@ class Symptom(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+
+class SynonymManager(models.Manager):
+
+    def replace(self, term):
+        synonym = Synonym.objects.annotate(
+            search=SearchVector("name", "words", config="french"),
+        ).filter(search=term)
+        return synonym.first().name if synonym.first() else term
+
+
+class Synonym(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    words = models.TextField()
+
+    objects = SynonymManager()
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["name"]
 
 
 class Office(models.Model):

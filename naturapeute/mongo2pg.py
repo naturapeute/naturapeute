@@ -1,7 +1,13 @@
+"""
+Import with the following command:
+
+python manage.py shell -c "from naturapeute import mongo2pg; mongo2pg.import_all()"
+
+"""
 from pymongo import MongoClient
 from django.db import IntegrityError
 
-from .models import Therapist, Practice, Symptom, Office
+from .models import Therapist, Practice, Symptom, Synonym, Office
 
 client = MongoClient()
 db = client.terrapeute
@@ -20,6 +26,17 @@ def import_practices():
         id_registry[str(therapy["_id"])] = practice
 
     print("practices imported")
+
+
+def import_synonyms():
+    Synonym.objects.all().delete()
+    counter = 0
+    for synonym in db.synonyms.find():
+        synonym = Synonym.objects.create(
+            name=synonym["name"], words=' '.join(synonym["words"])
+        )
+        counter += 1
+    print(counter + " synonyms imported")
 
 
 symptoms = {}
@@ -96,6 +113,7 @@ def import_therapists():
 
 
 def import_all():
-    import_practices()
-    import_symptoms()
-    import_therapists()
+    # import_practices()
+    # import_symptoms()
+    import_synonyms()
+    # import_therapists()
