@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.text import slugify
 from django.contrib.postgres.fields import HStoreField, JSONField
 from django.contrib.postgres.search import SearchVector
 from django_better_admin_arrayfield.models.fields import ArrayField
@@ -43,6 +42,9 @@ class Symptom(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+    class Meta:
+        ordering = ["name"]
 
 
 class SynonymManager(models.Manager):

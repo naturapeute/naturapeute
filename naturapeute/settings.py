@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'django_better_admin_arrayfield',
     'naturapeute',
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -46,7 +47,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'naturapeute.urls'
+ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {

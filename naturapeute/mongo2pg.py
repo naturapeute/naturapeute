@@ -8,6 +8,7 @@ from pymongo import MongoClient
 from django.db import IntegrityError
 
 from .models import Therapist, Practice, Symptom, Synonym, Office
+from .blog.models import Article, ArticleTag
 
 client = MongoClient()
 db = client.terrapeute
@@ -111,9 +112,28 @@ def import_therapists():
     print("therapists imported")
 
 
+def import_articles():
+    Article.objects.all().delete()
+    ArticleTag.objects.all().delete()
+    for article in db.articles.find():
+        instance = Article(
+            title=article["title"],
+            slug=article["slug"],
+            body=article["body"],
+        )
+        instance.save()
+        for tag in article["tags"]:
+            if len(tag):
+                instance.tags.add(ArticleTag.objects.get_or_create(name=tag)[0])
+        instance.creation_date = article["creationDate"]
+        instance.save()
+
+    print("articles imported")
+
 
 def import_all():
-    # import_practices()
-    # import_symptoms()
+    import_practices()
+    import_symptoms()
     import_synonyms()
-    # import_therapists()
+    import_therapists()
+    import_articles()
