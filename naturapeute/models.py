@@ -90,6 +90,16 @@ MEMBERSHIPS = (
 )
 
 
+class TherapistMembersManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(membership="member")
+
+
+class TherapistInviteesManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(membership="invitee")
+
+
 class Therapist(models.Model):
     slug = models.SlugField(max_length=100, unique=True)
     firstname = models.CharField(max_length=100, null=True)
@@ -110,6 +120,9 @@ class Therapist(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
     membership = models.CharField(max_length=20, choices=MEMBERSHIPS)
+
+    members = TherapistMembersManager()
+    invitees = TherapistInviteesManager()
 
     class Meta:
         ordering = ["-creation_date"]

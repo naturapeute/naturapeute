@@ -13,7 +13,7 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        therapists = Therapist.objects.all()
+        therapists = Therapist.members.all()
         context["therapistsCount"] = therapists.count()
         context["therapists"] = therapists[:5]
         context["practices"] = Practice.objects.all()
@@ -24,6 +24,7 @@ class TherapistsView(ListView):
     template_name = "therapists.html"
     model = Therapist
     context_object_name = "therapists"
+    queryset = Therapist.members
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
