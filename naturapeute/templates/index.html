@@ -55,15 +55,17 @@
     </form>
     <script>
       (() => {
-        const form = document.querySelector('#practice-form')
-        const submitter = form.querySelector('button')
-        submitter.disabled = true
-        form.querySelector('[name=practice]').addEventListener('keyup', (event) => {
+        function update(event) {
           const value = event.target.value
           const options = form.querySelectorAll('#practices option')
           const values = Array.from(options).map(o => o.value)
           submitter.disabled = !values.includes(value)
-        })
+        }
+        const form = document.querySelector('#practice-form')
+        const submitter = form.querySelector('button')
+        submitter.disabled = true
+        form.querySelector('[name=practice]').addEventListener('keyup', update)
+        form.querySelector('[name=practice]').addEventListener('change', update)
       })()
     </script>
 
