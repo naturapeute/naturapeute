@@ -18,7 +18,10 @@ id_registry = {}
 
 
 def import_practices():
-    Practice.objects.all().delete()
+    try:
+        Practice.objects.all().delete()
+    except Exception as e:
+        print(str(e))
     for therapy in db.therapies.find():
         practice = Practice.objects.create(
             name=therapy["name"], slug=therapy["slug"]
@@ -30,7 +33,10 @@ def import_practices():
 
 
 def import_synonyms():
-    Synonym.objects.all().delete()
+    try:
+        Synonym.objects.all().delete()
+    except Exception as e:
+        print(str(e))
     counter = 0
     for synonym in db.synonyms.find():
         synonym = Synonym.objects.create(
@@ -44,7 +50,10 @@ symptoms = {}
 
 
 def import_symptoms():
-    Symptom.objects.all().delete()
+    try:
+        Symptom.objects.all().delete()
+    except Exception as e:
+        print(str(e))
     for symptom in db.symptoms.find():
         if len(symptom["synonyms"]) == 1:
             symptom["synonyms"] = " ".split(symptom["synonyms"][0])
@@ -64,7 +73,10 @@ def import_symptoms():
 
 
 def import_therapists():
-    Therapist.objects.all().delete()
+    try:
+        Therapist.objects.all().delete()
+    except Exception as e:
+        print(str(e))
     for t in db.therapists.find():
         therapist = Therapist(
             slug=t["slug"],
@@ -113,8 +125,11 @@ def import_therapists():
 
 
 def import_articles():
-    Article.objects.all().delete()
-    ArticleTag.objects.all().delete()
+    try:
+        Article.objects.all().delete()
+        ArticleTag.objects.all().delete()
+    except Exception as e:
+        print(str(e))
     for article in db.articles.find():
         instance = Article(
             title=article["title"],
