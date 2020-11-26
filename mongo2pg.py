@@ -176,11 +176,6 @@ def import_therapists_pending():
 
 
 def import_articles():
-    try:
-        Article.objects.all().delete()
-        ArticleTag.objects.all().delete()
-    except Exception as e:
-        print(str(e))
     for article in db.articles.find():
         instance = Article(
             title=article["title"],
@@ -188,15 +183,6 @@ def import_articles():
             body=article["body"],
         )
         instance.save()
-        for tag in article["tags"]:
-            if not len(tag):
-                continue
-            try:
-                t_instance = ArticleTag.objects.get(Q(slug=tag)|Q(name=tag))
-            except:
-                t_instance = ArticleTag.objects.create(name=tag)
-            instance.tags.add(t_instance)
-
         instance.creation_date = article["creationDate"]
         instance.save()
 
