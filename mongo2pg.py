@@ -194,7 +194,7 @@ def import_articles():
             try:
                 t_instance = ArticleTag.objects.get(Q(slug=tag)|Q(name=tag))
             except:
-                t_instance = ArticleTag.objects.get_or_create(name=tag)[0]
+                t_instance = ArticleTag.objects.create(name=tag)
             instance.tags.add(t_instance)
 
         instance.creation_date = article["creationDate"]
