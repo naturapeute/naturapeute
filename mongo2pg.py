@@ -125,7 +125,11 @@ def import_therapists():
 
 def import_therapists_pending():
     for t in db.therapistpendings.find():
-        if Therapist.members.get(slug=t["slug"]):
+        try:
+            Therapist.members.get(slug=t["slug"])
+        except Therapist.DoesNotExist:
+            pass
+        else:
             continue
         name = t["name"].split(" ")
         therapist = Therapist(
