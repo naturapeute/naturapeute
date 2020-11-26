@@ -24,7 +24,7 @@ class TherapistsView(ListView):
     template_name = "therapists.html"
     model = Therapist
     context_object_name = "therapists"
-    queryset = Therapist.members
+    queryset = Therapist.members.all()
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
