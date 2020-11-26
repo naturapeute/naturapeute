@@ -9,7 +9,7 @@ from django.db import IntegrityError
 from django.db.models import Q
 
 from naturapeute.models import Therapist, Practice, Symptom, Synonym, Office
-from blog.models import Article, ArticleTag
+from blog.models import Article
 
 client = MongoClient()
 db = client.terrapeute
@@ -183,6 +183,7 @@ def import_articles():
             body=article["body"],
         )
         instance.save()
+
         instance.creation_date = article["creationDate"]
         instance.save()
 
