@@ -192,10 +192,10 @@ def import_articles():
             if not len(tag):
                 continue
             try:
-                instance = ArticleTag.objects.get(Q(slug=tag)|Q(name=tag))
+                t_instance = ArticleTag.objects.get(Q(slug=tag)|Q(name=tag))
             except:
-                instance = ArticleTag.objects.get_or_create(name=tag)[0]
-            instance.tags.add(instance)
+                t_instance = ArticleTag.objects.get_or_create(name=tag)[0]
+            instance.tags.add(t_instance)
 
         instance.creation_date = article["creationDate"]
         instance.save()
