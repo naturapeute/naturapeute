@@ -6,6 +6,7 @@ python manage.py shell -c "from src import mongo2pg; mongo2pg.import_all()"
 """
 from pymongo import MongoClient
 from django.db import IntegrityError
+from django.db.models import Q
 
 from naturapeute.models import Therapist, Practice, Symptom, Synonym, Office
 from blog.models import Article, ArticleTag
@@ -188,8 +189,14 @@ def import_articles():
         )
         instance.save()
         for tag in article["tags"]:
-            if len(tag):
-                instance.tags.add(ArticleTag.objects.get_or_create(name=tag)[0])
+            if not len(tag):
+                continue
+            try:
+                instance = ArticleTag.objects.get(Q(slug=tag)|Q(name=tag))
+            except:
+                instance = ArticleTag.objects.get_or_create(name=tag)[0]
+            instance.tags.add(instance)
+
         instance.creation_date = article["creationDate"]
         instance.save()
 
