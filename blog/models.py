@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 from django.utils.html import strip_tags
 from django.template.defaultfilters import truncatewords
 

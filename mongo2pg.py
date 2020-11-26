@@ -1,14 +1,14 @@
 """
 Import with the following command:
 
-python manage.py shell -c "from naturapeute import mongo2pg; mongo2pg.import_all()"
+python manage.py shell -c "from src import mongo2pg; mongo2pg.import_all()"
 
 """
 from pymongo import MongoClient
 from django.db import IntegrityError
 
-from .models import Therapist, Practice, Symptom, Synonym, Office
-from .blog.models import Article, ArticleTag
+from naturapeute.models import Therapist, Practice, Symptom, Synonym, Office
+from blog.models import Article, ArticleTag
 
 client = MongoClient()
 db = client.terrapeute
@@ -37,7 +37,7 @@ def import_synonyms():
             name=synonym["name"], words=' '.join(synonym["words"])
         )
         counter += 1
-    print(counter + " synonyms imported")
+    print(f"{counter} synonyms imported")
 
 
 symptoms = {}
