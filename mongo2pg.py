@@ -176,7 +176,7 @@ def import_therapists_pending():
 
 
 def import_articles():
-    Article.objects.delete()
+    Article.objects.all().delete()
     for article in db.articles.find():
         instance = Article(
             title=article["title"],
