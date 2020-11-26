@@ -93,6 +93,7 @@ def import_therapists():
             socials=t.get("socials"),
             agreements=t["agreements"],
             payment_types=t["paymentTypes"],
+            membership="member",
         )
         therapist.save()
         therapist.creation_date = t["creationDate"]
@@ -105,6 +106,49 @@ def import_therapists():
         [
             therapist.symptoms.add(id_registry[str(k)])
             for k in t["symptoms"]
+            if str(k) in id_registry
+        ]
+
+        for o in t["offices"]:
+            office = Office.objects.create(
+                street=o.get("street"),
+                zipcode=o.get("zipCode"),
+                city=o.get("city"),
+                country=o.get("country"),
+                pictures=o.get("pictures"),
+                latlng=o.get("location")["coordinates"],
+                therapist=therapist,
+            )
+
+        therapist.save()
+
+
+def import_therapists_pending():
+    for t in db.therapistpendings.find():
+        name = t["name"].split(" ")
+        therapist = Therapist(
+            slug=t["slug"],
+            firstname=name[0],
+            lastname=" ".join(name[1:]),
+            email=t.get("email"),
+            phone=t["phone"].replace(" ", ""),
+            is_certified=bool(t.get("isCertified")),
+            description=t.get("description"),
+            price=t.get("price"),
+            timetable=t.get("timetable"),
+            languages=t["languages"],
+            photo=t.get("photo"),
+            socials=t.get("socials"),
+            agreements=t["agreements"],
+            payment_types=t["paymentTypes"],
+            membership="invited",
+        )
+        therapist.save()
+        therapist.creation_date = t["creationDate"]
+
+        [
+            therapist.practices.add(id_registry[str(k)])
+            for k in t["therapies"]
             if str(k) in id_registry
         ]
 
@@ -151,4 +195,5 @@ def import_all():
     import_symptoms()
     import_synonyms()
     import_therapists()
+    import_therapists_pending()
     import_articles()

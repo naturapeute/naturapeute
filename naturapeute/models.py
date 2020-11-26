@@ -28,8 +28,7 @@ class SymptomManager(models.Manager):
             replaced.append(synonym.first().name if synonym.first() else t)
         return Symptom.objects.annotate(
             search=SearchVector("name", "keywords", config="french"),
-        ).filter(search=' '.join(replaced))
-
+).filter(search=' '.join(replaced))
 
 
 class Symptom(models.Model):
@@ -84,6 +83,13 @@ class Office(models.Model):
         return f"{str(self.therapist)} in {str(self.city)}"
 
 
+MEMBERSHIPS = (
+    ("invitee", "Invité"),
+    ("member", "Membre"),
+    ("premium", "Payant"),
+)
+
+
 class Therapist(models.Model):
     slug = models.SlugField(max_length=100, unique=True)
     firstname = models.CharField(max_length=100, null=True)
@@ -103,6 +109,7 @@ class Therapist(models.Model):
     symptoms = models.ManyToManyField(Symptom, related_name="therapists")
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
+    membership = models.CharField(max_length=20, choices=MEMBERSHIPS)
 
     class Meta:
         ordering = ["-creation_date"]
