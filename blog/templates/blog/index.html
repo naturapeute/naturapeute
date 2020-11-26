@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block body_class %}static{% endblock %}
+
+{% block meta_title %}Articles sur les thérapies complémentaires {{ articles.first.title }}{% endblock %}
+{% block meta_description %}
+  {% for article in articles %}
+    {{ article.tags.all|join:', ' }}
+  {% endfor %}
+. Revue d'articles et d'informations autour des thérapies complémentaires.{% endblock %}
+
+{% block content %}
+<section id=articles>
+{% for article in articles %}
+  <article>
+    <h1>{{ article.title }}</h1>
+    <p>{{ article.summary }}…</p>
+    <aside>
+      <time class="publication-date awesome"><i class="far fa-calendar-alt"> </i> le {{ article.creation_date|date:"DATE_FORMAT" }}</time>
+      <time class="reading-time awesome"><i class="fas fa-book-open"></i> 5 min. de lecture</time>
+      {% if article.tags.first %}
+      <div>
+        <i class="fas fa-tags"></i>
+        {{ article.tags.all|join:', ' }}</span>
+      </div>
+      {% endif %}
+    </aside>
+    <a href="{% url "article" article.slug %}" title="Lire l'article « {{ article.title }} »">Lire cet article</a>
+  </article>
+  {% endfor %}
+</section>
+
+<style>
+  article {
+    position: relative;
+    width: 70%;
+    margin-bottom: 3rem;
+  }
+  article h1 {
+    font-size: 1.25rem;
+    margin: 0;
+    padding: 0;
+    color: #111;
+  }
+  article a {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-indent: -9999%;
+  }
+  article p {
+    margin: .3rem 0 .45rem;
+    font-size: .8rem;
+    line-height: 1.3;
+    color: #999;
+  }
+  article aside {
+    font-size: .75rem;
+    color: #555;
+  }
+  .list-tag:not(:last-of-type) {
+    display: inline;
+    margin-right: .3rem;
+  }
+
+  aside > * {
+    display: inline;
+  }
+  aside > *:not(:last-child)::after {
+    content: "•";
+    padding: 0 .8rem;
+  }
+
+  .fa, .fas, .far {
+    margin-right: .1rem;
+  }
+</style>
+{% endblock %}
