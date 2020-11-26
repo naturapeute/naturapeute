@@ -32,8 +32,8 @@ class Article(Slugable, models.Model):
 
 
 class ArticleTag(models.Model):
-    name = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=50, unique=True)
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
