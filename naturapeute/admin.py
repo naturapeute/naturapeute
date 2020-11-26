@@ -8,7 +8,7 @@ from .models import Therapist, Symptom, Practice, Office, Synonym, models
 @admin.register(Therapist)
 class TherapistAdmin(admin.ModelAdmin, DynamicArrayMixin):
     list_display = ["__str__", "image_tag", "agreements", "slug"]
-    list_filter = ["is_certified"]
+    list_filter = ["is_certified", "membership"]
     search_fields = ["firstname", "lastname", "slug"]
 
     def image_tag(self, obj):

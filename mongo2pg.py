@@ -53,7 +53,7 @@ def import_symptoms():
     try:
         Symptom.objects.all().delete()
     except Exception as e:
-        print(str(e))
+        print("error:" + str(e))
     for symptom in db.symptoms.find():
         if len(symptom["synonyms"]) == 1:
             symptom["synonyms"] = " ".split(symptom["synonyms"][0])
@@ -74,9 +74,9 @@ def import_symptoms():
 
 def import_therapists():
     try:
-        Therapist.objects.all().delete()
+        Therapist.mixed.all().delete()
     except Exception as e:
-        print(str(e))
+        print("error:" + str(e))
     for t in db.therapists.find():
         therapist = Therapist(
             slug=t["slug"],
@@ -141,7 +141,7 @@ def import_therapists_pending():
             socials=t.get("socials"),
             agreements=t["agreements"],
             payment_types=t["paymentTypes"],
-            membership="invited",
+            membership="invitee",
         )
         therapist.save()
         therapist.creation_date = t["creationDate"]

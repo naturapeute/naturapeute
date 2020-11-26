@@ -121,6 +121,9 @@ class Therapist(models.Model):
     modification_date = models.DateTimeField(auto_now=True)
     membership = models.CharField(max_length=20, choices=MEMBERSHIPS)
 
+    # Not called "objects" to prevent from mistakenly using it and
+    # displaying all therapists.
+    mixed = models.Manager()
     members = TherapistMembersManager()
     invitees = TherapistInviteesManager()
 
