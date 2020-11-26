@@ -46,13 +46,13 @@ class TherapistView(TemplateView):
 
     def get_context_data(self, **kwargs):
         slug = f"{self.kwargs['slug0']}/{self.kwargs['slug1']}"
-        return {"therapist": Therapist.objects.get(slug=slug)}
+        return {"therapist": Therapist.mixed.get(slug=slug)}
 
 
 class TherapistVcardView(View):
     def get(self, *args, **kwargs):
         card = vobject.vCard()
-        therapist = Therapist.objects.get(
+        therapist = Therapist.mixed.get(
             slug=f"{self.kwargs['slug0']}/{self.kwargs['slug1']}"
         )
         office = therapist.offices.first()
