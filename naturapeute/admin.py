@@ -20,8 +20,9 @@ class TherapistAdmin(admin.ModelAdmin, DynamicArrayMixin):
     }
 
 @admin.register(Office)
-class OfficeAdmin(admin.ModelAdmin, DynamicArrayMixin):
-    pass
+class OfficeAdmin(admin.ModelAdmin):
+    search_fields = ["therapist__lastname", "therapist__firstname"]
+
 
 
 @admin.register(Practice)
