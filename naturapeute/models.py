@@ -190,7 +190,7 @@ class Therapist(models.Model):
 def therapist_create_slug(sender, instance, **kwargs):
     post_save.disconnect(therapist_create_slug, sender=sender)
     if not instance.slug:
-        instance.slug = f"{instance.lastname}/{instance.pk}"
+        instance.slug = f"{slugify(instance.lastname)}/{instance.pk}"
     elif instance.practices.count() and instance.offices.count():
         instance.slug = slugify(f"{instance.practices.first().name}-{instance.offices.first().city}") + "/" + slugify(f"{instance.name}")
     instance.save()
