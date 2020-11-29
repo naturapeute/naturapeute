@@ -10,6 +10,7 @@ class OfficePictureInline(admin.TabularInline):
     exclude = ["uuid"]
 
 
+
 @admin.register(Office)
 class OfficeAdmin(admin.ModelAdmin):
     inlines = [OfficePictureInline]
@@ -19,6 +20,7 @@ class OfficeAdmin(admin.ModelAdmin):
 class OfficeInline(admin.StackedInline):
     model = Office
     readonly_fields = ["country"]
+    extra = 1
 
 
 @admin.register(Therapist)

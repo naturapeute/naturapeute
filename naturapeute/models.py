@@ -3,6 +3,8 @@ from django.contrib.postgres.fields import HStoreField, JSONField
 from django.contrib.postgres.search import SearchVector
 from django.utils.text import slugify
 from django_better_admin_arrayfield.models.fields import ArrayField
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from core.utils import normalize_text, unique, crypt
 
@@ -122,7 +124,7 @@ class Therapist(models.Model):
     def upload_to(self, *args, **kwargs):
         return f"therapists/{self.uuid}"
 
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True, null=True)
     firstname = models.CharField(max_length=100, null=True, blank=True)
     lastname = models.CharField(max_length=100)
     gender = models.CharField(max_length=6, default="woman", choices=GENDERS)
@@ -165,7 +167,10 @@ class Therapist(models.Model):
 
     @property
     def name(self):
-        return f"{self.firstname} {self.lastname}"
+        if self.firstname:
+            return f"{self.firstname} {self.lastname}"
+        else:
+            return self.lastname
 
     @property
     def languages_verbose(self):
@@ -180,11 +185,16 @@ class Therapist(models.Model):
         if self.languages:
             return [trans[l] for l in self.languages]
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f"{self.practices.first().name}-{self.offices.first().city}") + "/" + slugify(f"{self.name}")
-        return super().save(*args, **kwargs)
 
+@receiver(post_save, sender=Therapist)
+def therapist_create_slug(sender, instance, **kwargs):
+    post_save.disconnect(therapist_create_slug, sender=sender)
+    if not instance.slug:
+        instance.slug = f"{instance.lastname}/{instance.pk}"
+    elif instance.practices.count() and instance.offices.count():
+        instance.slug = slugify(f"{instance.practices.first().name}-{instance.offices.first().city}") + "/" + slugify(f"{instance.name}")
+    instance.save()
+    post_save.connect(therapist_create_slug, sender=sender)
 
 # const TherapistPendingSchema = new mongoose.Schema({
 #   slug: { type: String, unique: true },
