@@ -14,10 +14,14 @@ class Slugable:
 
 
 class Article(Slugable, models.Model):
+    def upload_to(self, *args, **kwargs):
+        return f"article/{self.uuid}"
+
     slug_from_field = "title"
 
     tags = models.ManyToManyField("ArticleTag", related_name="articles")
     title = models.CharField(max_length=150)
+    image = models.ImageField(blank=True, null=True)
     slug = models.SlugField(max_length=150, unique=True)
     body = models.TextField(blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)

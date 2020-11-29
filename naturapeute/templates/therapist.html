@@ -55,16 +55,16 @@
       </address>
       <div id="map"></div>
     </section>
-    {% endwith %}
 
-    {% if therapist.pictures %}
+    {% if office.pictures.first %}
     <section>
       <h2>Le cabinet</h2>
-      {% for picture in therapist.offices.first.pictures %}
+      {% for picture in office.pictures.all %}
       <img src={{ picture }} height=200>
       {% endfor %}
     </section>
     {% endif %}
+    {% endwith %}
   </div>
 
   <aside>

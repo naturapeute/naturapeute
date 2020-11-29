@@ -29,15 +29,22 @@ class TherapistsView(ListView):
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
         params = self.request.GET
+        practice_arg = self.kwargs.get("practice")
+        practice_name = params.get("practice")
+        if practice_name:
+            try:
+                practice = Practice.objects.get(name=practice_name)
+            except Pratice.DoesNotExist:
+                pass
+            else:
+                return redirect("therapists_practice", practice.slug)
+        elif practice_arg:
+            qs = qs.filter(practices=practice).distinct()
+
         symptom_name = params.get("symptom")
         if symptom_name:
             symptoms = Symptom.objects.search(symptom_name)
             qs = qs.filter(symptoms__in=symptoms).distinct()
-        practice_name = params.get("practice")
-        if practice_name:
-            practice = Practice.objects.get(name=practice_name)
-            if practice:
-                qs = qs.filter(practices=practice).distinct()
         return qs
 
 

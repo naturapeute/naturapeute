@@ -1,9 +1,10 @@
 deploy:
 	ssh naturapeute "\
 		cd admin && \
-		git pull && \
 		source venv/bin/activate && \
+		git pull && \
 		pip install -r requirements.txt && \
+		python manage.py migrate && \
 		echo 'updated'"
 	make restart-server
 

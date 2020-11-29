@@ -1,3 +1,6 @@
+from hashlib import md5
+from uuid import uuid4
+
 from django.utils.text import slugify
 
 
@@ -28,3 +31,13 @@ def normalize_text(text):
             continue
         normalized.append(w)
     return " ".join(normalized)
+
+
+def crypt(text=None):
+    if not text:
+        text = unique()
+    return md5(text.encode('UTF-8')).hexdigest()
+
+
+def unique(length=12):
+    return uuid4().hex[:length]
