@@ -198,7 +198,7 @@
         label: "{{therapist.name}} — {{ therapist.practices.first }}",
         latlng: [{{ therapist.offices.first.latlng.0}}, {{therapist.offices.first.latlng.1 }}],
         url: "{{therapist.slug}}/{{therapist.id}}",
-        photo: `{{ therapist.photo }}`,
+        photo: `{{ therapist.photo_url }}`,
       },
       {% endif %}
     {% endfor %}

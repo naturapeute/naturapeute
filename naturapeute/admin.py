@@ -32,10 +32,7 @@ class TherapistAdmin(admin.ModelAdmin, DynamicArrayMixin):
     inlines = [OfficeInline]
 
     def image_tag(self, obj):
-        url = obj.photo
-        if obj.photo.url:
-            url = obj.photo.url
-        return format_html(f'<img src="{url}" style="width: 45px; height:45px;" />')
+        return format_html(f'<img src="{obj.photo_url}" style="width: 45px; height:45px;" />')
     image_tag.short_description = 'Photo'
 
     formfield_overrides = {

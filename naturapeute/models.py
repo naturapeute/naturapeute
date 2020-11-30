@@ -131,7 +131,7 @@ class TherapistInviteesManager(models.Manager):
 
 class Therapist(models.Model):
     def upload_to(self, *args, **kwargs):
-        return f"therapists/{self.uuid}"
+        return f"therapists/{slugify(self.slug)}"
 
     slug = models.SlugField(max_length=100, unique=True, null=True)
     firstname = models.CharField(max_length=100, null=True, blank=True)
@@ -144,10 +144,10 @@ class Therapist(models.Model):
     price = models.TextField(null=True, blank=True)
     timetable = models.TextField(null=True, blank=True)
     languages = ArrayField(models.CharField(max_length=2, choices=LANGUAGES), null=True, blank=True)
-    photo = models.ImageField(max_length=255, null=True, blank=True)
+    photo = models.ImageField(upload_to=upload_to, max_length=255, null=True, blank=True)
     socials = ArrayField(models.TextField(), null=True, blank=True)
     practice = models.ForeignKey(Practice, verbose_name="Pratique principale", related_name="experts", on_delete=models.RESTRICT)
-    practices = models.ManyToManyField(Practice, verbose_name="Autres pratiques", related_name="therapists")
+    practices = models.ManyToManyField(Practice, verbose_name="Autres pratiques", related_name="therapists", blank=True)
     agreements = ArrayField(models.CharField(max_length=50), null=True, blank=True)
     payment_types = ArrayField(models.CharField(max_length=20), null=True, blank=True)
     symptoms = models.ManyToManyField(Symptom, related_name="therapists", blank=True)
@@ -181,6 +181,13 @@ class Therapist(models.Model):
             return f"{self.firstname} {self.lastname}"
         else:
             return self.lastname
+
+    @property
+    def photo_url(self):
+        url = self.photo
+        if url and not str(url).startswith("http"):
+            url = self.photo.url
+        return url
 
 
 @receiver(post_save, sender=Therapist)
