@@ -80,7 +80,7 @@ class Office(models.Model):
     zipcode = models.CharField(max_length=5, null=True)
     city = models.CharField(max_length=50, null=True)
     country = models.CharField(max_length=2, default="ch")
-    latlng = ArrayField(models.DecimalField(decimal_places=2, max_digits=10), size=2)
+    latlng = ArrayField(models.DecimalField(decimal_places=10, max_digits=12), size=2)
 
     def __str__(self):
         return f"{str(self.therapist)} in {str(self.city)}"
@@ -109,6 +109,15 @@ GENDERS = (
     ("woman", "Femme"),
 )
 
+LANGUAGES = (
+    ("en", "anglais"),
+    ("fr", "français"),
+    ("de", "allemand"),
+    ("ru", "russe"),
+    ("it", "italien"),
+    ("es", "espagnol"),
+)
+
 
 class TherapistMembersManager(models.Manager):
     def get_queryset(self):
@@ -134,13 +143,14 @@ class Therapist(models.Model):
     description = models.TextField(null=True, blank=True)
     price = models.TextField(null=True, blank=True)
     timetable = models.TextField(null=True, blank=True)
-    languages = ArrayField(models.CharField(max_length=2), null=True, blank=True)
+    languages = ArrayField(models.CharField(max_length=2, choices=LANGUAGES), null=True, blank=True)
     photo = models.ImageField(max_length=255, null=True, blank=True)
     socials = ArrayField(models.TextField(), null=True, blank=True)
-    practices = models.ManyToManyField(Practice, related_name="therapists")
+    practice = models.ForeignKey(Practice, verbose_name="Pratique principale", related_name="experts", on_delete=models.RESTRICT)
+    practices = models.ManyToManyField(Practice, verbose_name="Autres pratiques", related_name="therapists")
     agreements = ArrayField(models.CharField(max_length=50), null=True, blank=True)
     payment_types = ArrayField(models.CharField(max_length=20), null=True, blank=True)
-    symptoms = models.ManyToManyField(Symptom, related_name="therapists", null=True, blank=True)
+    symptoms = models.ManyToManyField(Symptom, related_name="therapists", blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
     membership = models.CharField(max_length=20, choices=MEMBERSHIPS)
@@ -172,53 +182,14 @@ class Therapist(models.Model):
         else:
             return self.lastname
 
-    @property
-    def languages_verbose(self):
-        trans = {
-            "en": "anglais",
-            "fr": "français",
-            "de": "allemand",
-            "ru": "russe",
-            "it": "italien",
-            "es": "espagnol",
-        }
-        if self.languages:
-            return [trans[l] for l in self.languages]
-
 
 @receiver(post_save, sender=Therapist)
 def therapist_create_slug(sender, instance, **kwargs):
     post_save.disconnect(therapist_create_slug, sender=sender)
-    if not instance.slug:
-        instance.slug = f"{slugify(instance.lastname)}/{instance.pk}"
-    elif instance.practices.count() and instance.offices.count():
-        instance.slug = slugify(f"{instance.practices.first().name}-{instance.offices.first().city}") + "/" + slugify(f"{instance.name}")
+    part1 = instance.practice.slug
+    if instance.offices.count():
+        part1 += "-" + slugify(instance.offices.first().city)
+    part2 = slugify(instance.name)
+    instance.slug = f"{part1}/{part2}"
     instance.save()
     post_save.connect(therapist_create_slug, sender=sender)
-
-# const TherapistPendingSchema = new mongoose.Schema({
-#   slug: { type: String, unique: true },
-#   name: String,
-#   email: String,
-#   phone: String,
-#   isCertified: Boolean,
-#   description: String,
-#   price: String,
-#   timetable: String,
-#   languages: [String],
-#   photo: String,
-#   socials: [Object],
-#   therapies: [String],
-#   agreements: [String],
-#   paymentTypes: [String],
-#   // symptoms: [{ type: mongoose.ObjectId, ref: Symptom }],
-#   offices: [Office],
-#   creationDate: { type: Date, default: Date.now },
-#   expirationDate: Date,
-#   confirmed: Boolean,
-# })
-
-# TherapistPendingSchema.virtual('photoUrl').get(function() {
-#   if(this.photo.startsWith('http')) return this.photo
-#   return `/uploads/therapists/holistia/${this.slug}.jpg`
-# })
