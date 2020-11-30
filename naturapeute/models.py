@@ -80,7 +80,7 @@ class Office(models.Model):
     zipcode = models.CharField(max_length=5, null=True)
     city = models.CharField(max_length=50, null=True)
     country = models.CharField(max_length=2, default="ch")
-    latlng = ArrayField(models.DecimalField(decimal_places=10, max_digits=12), size=2)
+    latlng = ArrayField(models.DecimalField(decimal_places=15, max_digits=17), size=2)
 
     def __str__(self):
         return f"{str(self.therapist)} in {str(self.city)}"
