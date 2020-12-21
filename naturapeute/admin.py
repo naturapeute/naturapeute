@@ -2,7 +2,7 @@ from django.contrib import admin
 from django_better_admin_arrayfield.admin.mixins import DynamicArrayMixin
 from django.utils.html import format_html
 
-from .models import Therapist, Symptom, Practice, Office, OfficePicture, Synonym, models
+from .models import Patient, Therapist, Symptom, Practice, Office, OfficePicture, Synonym, models
 
 
 class OfficePictureInline(admin.TabularInline):
@@ -55,3 +55,8 @@ class SymptomAdmin(admin.ModelAdmin, DynamicArrayMixin):
 @admin.register(Synonym)
 class SynonymAdmin(admin.ModelAdmin, DynamicArrayMixin):
     list_display = ["__str__", "words"]
+
+
+@admin.register(Patient)
+class PatientAdmin(admin.ModelAdmin, DynamicArrayMixin):
+    pass

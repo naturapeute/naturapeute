@@ -33,13 +33,16 @@ INSTALLED_APPS = [
     # custom
     'django.contrib.postgres',
     'django_better_admin_arrayfield',
+    'corsheaders',
     'naturapeute',
     'blog',
+    'api',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -118,6 +121,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_ROOT = BASE_DIR / 'uploads'
 MEDIA_URL = '/uploads/'
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 try:
     from local_settings import *

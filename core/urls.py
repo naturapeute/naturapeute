@@ -17,14 +17,18 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
+from django.conf import settings
 
 from naturapeute import views as naturapeute_views
 from blog import views as blog_views
-from django.conf import settings
+from api import views as api_views
 
 
 urlpatterns = [
     path("", naturapeute_views.HomeView.as_view()),
+
+    path("api/therapist/<email_or_pk>", api_views.TherapistView.as_view(), name="api_therapist"),
+    path("api/therapist/<id>", api_views.TherapistView.as_view(), name="api_therapist"),
 
     path("journal/", blog_views.HomeView.as_view(), name="blog"),
     path("journal/<slug>/", blog_views.ArticleView.as_view(), name="article"),

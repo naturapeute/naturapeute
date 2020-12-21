@@ -1,5 +1,6 @@
+import time
+
 from django.db import models
-from django.contrib.postgres.fields import HStoreField, JSONField
 from django.contrib.postgres.search import SearchVector
 from django.utils.text import slugify
 from django_better_admin_arrayfield.models.fields import ArrayField
@@ -7,6 +8,25 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from core.utils import normalize_text, unique, crypt
+
+
+invoice_data = dict({
+    "hourly_price": 0,
+    "services": [],
+    "therapist": {
+        "name": "",
+        "email": "",
+        "phone": "",
+        "zipcode": "",
+        "city": "",
+        "street": "",
+        "rcc": "",
+    },
+})
+invoice_data["author"] = dict({
+    **invoice_data["therapist"],
+    "iban": "",
+})
 
 
 class Practice(models.Model):
@@ -151,16 +171,18 @@ class Therapist(models.Model):
     agreements = ArrayField(models.CharField(max_length=50), null=True, blank=True)
     payment_types = ArrayField(models.CharField(max_length=20), null=True, blank=True)
     symptoms = models.ManyToManyField(Symptom, related_name="therapists", blank=True)
+    membership = models.CharField(max_length=20, choices=MEMBERSHIPS)
+    patients = models.ManyToManyField("Patient", through="TherapistPatient", related_name="therapists")
+    invoice_data = models.JSONField(default=invoice_data, null=True)
+    services = ArrayField(models.IntegerField(), null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
-    membership = models.CharField(max_length=20, choices=MEMBERSHIPS)
 
     # Not called "objects" to prevent from mistakenly using it and
     # displaying all therapists.
     mixed = models.Manager()
     members = TherapistMembersManager()
     invitees = TherapistInviteesManager()
-
     class Meta:
         ordering = ["-creation_date"]
 
@@ -200,3 +222,32 @@ def therapist_create_slug(sender, instance, **kwargs):
     instance.slug = f"{part1}/{part2}"
     instance.save()
     post_save.connect(therapist_create_slug, sender=sender)
+
+
+class Patient(models.Model):
+    firstname = models.CharField(max_length=100, null=True, blank=True)
+    lastname = models.CharField(max_length=100)
+    gender = models.CharField(max_length=6, choices=GENDERS, null=True, blank=True)
+    birthdate = models.DateField(null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    street = models.CharField(max_length=100, null=True, blank=True)
+    canton = models.CharField(max_length=2, null=True, blank=True)
+    zipcode = models.IntegerField(null=True, blank=True)
+    city = models.CharField(max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        if(self.firstname):
+            return f"{self.firstname} {self.lastname}"
+        return self.lastname
+
+    def to_json(self):
+        data = self.__dict__
+        del data["_state"]
+        data["birthdate"] = time.mktime(self.birthdate.timetuple()) * 1000
+        return data
+
+
+class TherapistPatient(models.Model):
+    therapist = models.ForeignKey(Therapist, on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    creation_date = models.DateTimeField(auto_now_add=True)
