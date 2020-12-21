@@ -4,11 +4,13 @@ Import with the following command:
 python manage.py shell -c "from src import mongo2pg; mongo2pg.import_all()"
 
 """
+from datetime import date
+
 from pymongo import MongoClient
 from django.db import IntegrityError
 from django.db.models import Q
 
-from naturapeute.models import Therapist, Practice, Symptom, Synonym, Office
+from naturapeute.models import Therapist, Practice, Symptom, Synonym, Office, Patient
 from blog.models import Article
 
 client = MongoClient()
@@ -191,10 +193,65 @@ def import_articles():
     print("articles imported")
 
 
+def import_patients():
+    Patient.objects.all().delete()
+    for extra in db.therapistdatas.find():
+        t = db.therapists.find_one({ "airtableId": extra["therapistAirtableId"] })
+        if not t: continue
+        print("therapist:", t["lastname"], t["firstname"])
+        therapist = Therapist.mixed.get(lastname=t["lastname"], firstname=t["firstname"])
+
+        data =  extra["data"]
+        therapist.invoice_data = {
+            "hourly_price": data["servicePrice"],
+            "services": data["preferredServices"],
+            "author": {
+                "name": data["author"]["name"],
+                "email": data["author"]["email"],
+                "phone": data["author"]["phone"],
+                "zipcode": data["author"]["ZIP"],
+                "city": data["author"]["city"],
+                "street": data["author"]["street"],
+                "rcc": data["author"]["RCC"],
+                "iban": data["author"]["IBAN"],
+            },
+            "therapist": {
+                "firstname": data["therapist"]["firstName"],
+                "lastname": data["therapist"]["lastName"],
+                "street": data["therapist"]["street"],
+                "zipcode": data["therapist"]["ZIP"],
+                "city": data["therapist"]["city"],
+                "phone": data["therapist"]["phone"],
+                "rcc": data["therapist"]["RCC"],
+            }
+        }
+        therapist.save()
+
+        for patient in data["patients"]:
+            gender = "man" if patient["gender"] == "male" else "woman"
+            try:
+                zipcode = int(patient["ZIP"])
+            except:
+                zipcode = None
+            patient = Patient.objects.create(
+                firstname=patient["firstName"],
+                lastname=patient["lastName"],
+                street=patient["street"],
+                zipcode=zipcode,
+                city=patient["city"],
+                canton=patient["canton"],
+                gender=gender,
+                birthdate=date.fromtimestamp(patient["birthday"] / 1000),
+                email=patient["email"],
+            )
+            therapist.patients.add(patient)
+
+
 def import_all():
-    import_practices()
-    import_symptoms()
-    import_synonyms()
-    import_therapists()
-    import_therapists_pending()
-    import_articles()
+    # import_practices()
+    # import_symptoms()
+    # import_synonyms()
+    # import_therapists()
+    # import_therapists_pending()
+    # import_articles()
+    import_patients()

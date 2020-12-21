@@ -10,23 +10,30 @@ from django.dispatch import receiver
 from core.utils import normalize_text, unique, crypt
 
 
-invoice_data = dict({
+invoice_data = {
     "hourly_price": 0,
     "services": [],
-    "therapist": {
+    "author": {
         "name": "",
         "email": "",
         "phone": "",
+        "street": "",
         "zipcode": "",
         "city": "",
+        "rcc": "",
+        "iban": "",
+    },
+    "therapist": {
+        "firstname": "",
+        "lastname": "",
+        "email": "",
+        "phone": "",
         "street": "",
+        "zipcode": "",
+        "city": "",
         "rcc": "",
     },
-})
-invoice_data["author"] = dict({
-    **invoice_data["therapist"],
-    "iban": "",
-})
+}
 
 
 class Practice(models.Model):
