@@ -21,7 +21,7 @@ class Article(Slugable, models.Model):
 
     tags = models.ManyToManyField("ArticleTag", related_name="articles")
     title = models.CharField(max_length=150)
-    image = models.ImageField(blank=True, null=True)
+    image = models.ImageField(max_length=200, blank=True, null=True)
     slug = models.SlugField(max_length=150, unique=True)
     body = models.TextField(blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)
