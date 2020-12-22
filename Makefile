@@ -1,6 +1,6 @@
 deploy:
 	ssh naturapeute "\
-		cd admin && \
+		cd prod && \
 		source venv/bin/activate && \
 		git pull && \
 		pip install -r requirements.txt && \
@@ -11,5 +11,5 @@ deploy:
 restart-server:
 	ssh naturapeute "\
 		sudo systemctl daemon-reload && \
-		sudo systemctl restart admin &&\
+		sudo systemctl restart naturapeute &&\
 		echo 'server restarted'"
