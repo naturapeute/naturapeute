@@ -4,6 +4,7 @@ deploy:
 		source venv/bin/activate && \
 		git pull && \
 		pip install -r requirements.txt && \
+		python manage.py collectstatic && \
 		python manage.py migrate && \
 		echo 'updated'"
 	make restart-server

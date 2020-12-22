@@ -240,6 +240,8 @@ class Therapist(models.Model):
     @property
     def photo_url(self):
         url = self.photo
+        if not self.photo.name and self.gender:
+            return f"/static/img/avatar-{self.gender}.png"
         if url and not str(url).startswith("http"):
             url = self.photo.url
         return url
