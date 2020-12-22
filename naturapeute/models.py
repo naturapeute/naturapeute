@@ -223,6 +223,8 @@ class Therapist(models.Model):
             return self.office.city
 
     def get_social(self, name):
+        if not self.socials:
+            return
         matches = [eval(s) for s in self.socials if eval(s)["name"] == name]
         if matches:
             return matches[0]["url"]

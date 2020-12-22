@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'naturapeute.wsgi.application'
+WSGI_APPLICATION = 'core.wsgi.application'
 
 
 # Database
