@@ -17,7 +17,7 @@
     <p>{{ article.summary }}…</p>
     <aside>
       <time class="publication-date awesome"><i class="far fa-calendar-alt"> </i> le {{ article.creation_date|date:"DATE_FORMAT" }}</time>
-      <time class="reading-time awesome"><i class="fas fa-book-open"></i> 5 min. de lecture</time>
+      <time class="reading-time awesome"><i class="fas fa-book-open"></i> {{ article.reading_time }} min. de lecture</time>
       {% if article.tags.first %}
       <div>
         <i class="fas fa-tags"></i>

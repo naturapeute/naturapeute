@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils.html import strip_tags
-from django.template.defaultfilters import truncatewords
+from django.template.defaultfilters import truncatewords, wordcount, striptags, floatformat
 
 
 class Slugable:
@@ -33,6 +33,10 @@ class Article(Slugable, models.Model):
     @property
     def summary(self):
         return strip_tags(truncatewords(self.body, 50))
+
+    @property
+    def reading_time(self):
+        return round((wordcount(striptags(self.body)) / 225) + .5)
 
     class Meta:
         ordering = ["-creation_date"]
