@@ -184,6 +184,7 @@ def import_articles():
             title=article["title"],
             slug=article["slug"],
             body=article["body"],
+            image=article.get("image"),
         )
         instance.save()
 
@@ -253,6 +254,5 @@ def import_all():
     # import_synonyms()
     # import_therapists()
     # import_therapists_pending()
-    # import_articles()
     # import_patients()
     import_articles()

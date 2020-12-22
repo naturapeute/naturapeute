@@ -34,6 +34,9 @@ class Article(Slugable, models.Model):
     def summary(self):
         return strip_tags(truncatewords(self.body, 50))
 
+    class Meta:
+        ordering = ["-creation_date"]
+
 
 class ArticleTag(models.Model):
     name = models.CharField(max_length=100)
