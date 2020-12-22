@@ -254,4 +254,5 @@ def import_all():
     # import_therapists()
     # import_therapists_pending()
     # import_articles()
-    import_patients()
+    # import_patients()
+    import_articles()
