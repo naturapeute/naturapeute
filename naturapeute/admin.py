@@ -28,7 +28,7 @@ class TherapistAdmin(admin.ModelAdmin, DynamicArrayMixin):
     list_display = ["__str__", "image_tag", "agreements", "slug"]
     list_filter = ["is_certified", "membership"]
     search_fields = ["firstname", "lastname", "slug"]
-    exclude = ["slug"]
+    exclude = ["slug", "services", "invoice_data"]
     inlines = [OfficeInline]
 
     def image_tag(self, obj):
