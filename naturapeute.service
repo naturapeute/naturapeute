@@ -1,0 +1,18 @@
+[Unit]
+Description=Naturapeute Website
+After=network.target
+
+[Service]
+ExecStart=/home/ubuntu/prod/venv/bin/gunicorn --timeout 60 -w 2 --bind=0.0.0.0:8000 --bind=[::1]:8000 core.wsgi:application
+WorkingDirectory=/home/ubuntu/prod
+Restart=always
+RestartSec=3
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=naturapeute-website
+#User=<alternate user>
+#Group=<alternate group>
+Environment=PORT=8000
+
+[Install]
+WantedBy=multi-user.target
