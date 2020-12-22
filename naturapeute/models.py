@@ -143,6 +143,7 @@ LANGUAGES = (
     ("ru", "russe"),
     ("it", "italien"),
     ("es", "espagnol"),
+    ("nl", "néerlandais"),
 )
 
 
@@ -210,6 +211,11 @@ class Therapist(models.Model):
             return f"{self.firstname} {self.lastname}"
         else:
             return self.lastname
+
+    @property
+    def city(self):
+        if len(self.offices):
+            return self.offices[0].city
 
     @property
     def photo_url(self):
