@@ -213,9 +213,13 @@ class Therapist(models.Model):
             return self.lastname
 
     @property
+    def office(self):
+        return self.offices.first()
+
+    @property
     def city(self):
-        if len(self.offices):
-            return self.offices[0].city
+        if self.office:
+            return self.office.city
 
     @property
     def photo_url(self):
