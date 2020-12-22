@@ -1,3 +1,4 @@
+import json
 import time
 
 from django.db import models
@@ -220,6 +221,19 @@ class Therapist(models.Model):
     def city(self):
         if self.office:
             return self.office.city
+
+    def get_social(self, name):
+        matches = [eval(s) for s in self.socials if eval(s)["name"] == name]
+        if matches:
+            return matches[0]["url"]
+
+    @property
+    def website(self):
+        return self.get_social("website")
+
+    @property
+    def facebook(self):
+        return self.get_social("facebook")
 
     @property
     def photo_url(self):
