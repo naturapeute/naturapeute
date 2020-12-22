@@ -234,6 +234,10 @@ h2.iconed {
   border-radius: 2rem;
 }
 
+main {
+  min-height: 50vh;
+}
+
 main.static {
   max-width: 56rem;
   padding: 0 2rem;

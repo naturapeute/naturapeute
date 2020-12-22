@@ -1,7 +1,8 @@
 from django.views.generic import TemplateView, ListView, View
 from django.views.generic.base import RedirectView
 from django.shortcuts import redirect, reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
+
 import vobject
 
 from .models import Therapist, Symptom, Practice
@@ -53,7 +54,11 @@ class TherapistView(TemplateView):
 
     def get_context_data(self, **kwargs):
         slug = f"{self.kwargs['slug0']}/{self.kwargs['slug1']}"
-        return {"therapist": Therapist.mixed.get(slug=slug)}
+        try:
+            therapist = Therapist.mixed.get(slug=slug)
+        except Therapist.DoesNotExist:
+            raise Http404(f"Therapist not found with slug {slug}")
+        return {"therapist": therapist}
 
 
 class TherapistVcardView(View):
