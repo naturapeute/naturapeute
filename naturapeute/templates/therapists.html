@@ -21,7 +21,7 @@
         {% avatar therapist %}
         <div>
           <h2>{{ therapist.name }}</h2>
-          <h3>{{ therapist.practices.first.name }}</h3>
+          <h3>{{ therapist.practice.name }}</h3>
           <p>{{ therapist.city }}</p>
           {% if therapist.description %}
           <p class=description>{{ therapist.description | truncatechars:120 }}
@@ -33,7 +33,7 @@
           <span class=tag title="{{ therapist.therapy }} agréé {{ agreement }}">{{ agreement | upper }}</span>
           {% endfor %}
         </footer>
-        <a href="{% url 'therapist' therapist.slug0 therapist.slug1 %}" title="{{ therapist.name }} est {{ therapist.practices.first.name }} à {{ therapist.city }}">Voir ce {{ therapist.practices.0.name }} à {{ therapist.city }}</a>
+        <a href="{% url 'therapist' therapist.slug0 therapist.slug1 %}" title="{{ therapist.name }} est {{ therapist.practice.name }} à {{ therapist.city }}">Voir ce {{ therapist.practices.0.name }} à {{ therapist.city }}</a>
       </article>
       {% endfor %}
     </div>
@@ -194,8 +194,8 @@
       {
         id: "{{therapist.id}}",
         name: "{{therapist.name}}",
-        therapy: "{{therapist.practices.first.name}}",
-        label: "{{therapist.name}} — {{ therapist.practices.first }}",
+        therapy: "{{therapist.practice.name}}",
+        label: "{{therapist.name}} — {{ therapist.practice }}",
         latlng: [{{ therapist.offices.first.latlng.0}}, {{therapist.offices.first.latlng.1 }}],
         url: "{{therapist.slug}}/{{therapist.id}}",
         photo: `{{ therapist.photo_url }}`,

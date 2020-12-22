@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load tags %}
 
-{% block meta_title %}{{ therapist.name }}, {{ therapist.practices.first.name }} à {{ therapist.city }}{% endblock %}
+{% block meta_title %}{{ therapist.name }}, {{ therapist.practice.name }} à {{ therapist.city }}{% endblock %}
 
-{% block meta_description %}{{ therapist.name }} est thérapeute agréé {{ therapist.agreements|join:', ' }} en {{ therapist.practices.first.name }} à {{ therapist.city }}.
+{% block meta_description %}{{ therapist.name }} est thérapeute agréé {{ therapist.agreements|join:', ' }} en {{ therapist.practice.name }} à {{ therapist.city }}.
 {{ therapist.description|truncatechars:150 }}{% endblock %}
 
 {% block content %}
@@ -11,14 +11,14 @@
   <div>
     <section id=identity>
       {% avatar therapist %}
-      <h1>{{ therapist.practices.first.name }} à {{ therapist.city }}</h1>
+      <h1>{{ therapist.practice.name }} à {{ therapist.city }}</h1>
       <h2>{{ therapist }}</h2>
       <p>
         {% for practice in therapist.practices.all %}
           <span class=tag title="{{ practice.name }} à {{ therapist.city }}">{{ practice.name }}</span>
         {% endfor %}
       </p>
-      <p id=agreements title="{{ therapist.practices.first.name }} agréé {{ therapist.agreements|join:', ' }}">Thérapeute professionnel
+      <p id=agreements title="{{ therapist.practice.name }} agréé {{ therapist.agreements|join:', ' }}">Thérapeute professionnel
         {% if therapist.agreements %}agréé {{ therapist.agreements|join:', ' | upper }}
         {% else %}diplomé
         {% endif %}
@@ -48,7 +48,7 @@
 
     {% with office=therapist.offices.first %}
     <section>
-      <h2>Cabinet de {{ therapist.practices.first.name }} à {{ office.city }}</h2>
+      <h2>Cabinet de {{ therapist.practice.name }} à {{ office.city }}</h2>
       <address>
         {{ office.street }}<br>
         {{ office.zipcode }} {{ office.city }}
