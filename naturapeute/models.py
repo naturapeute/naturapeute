@@ -113,6 +113,12 @@ class Office(models.Model):
     def __str__(self):
         return f"{str(self.therapist)} in {str(self.city)}"
 
+    @property
+    def coordinates(self):
+        if not len(self.latlng) == 2:
+            return
+        return [float(ll) for ll in self.latlng]
+
 
 class OfficePicture(models.Model):
     def upload_to(self, *args, **kwargs):
@@ -145,6 +151,7 @@ LANGUAGES = (
     ("it", "italien"),
     ("es", "espagnol"),
     ("nl", "néerlandais"),
+    ("pl", "polonais"),
 )
 
 

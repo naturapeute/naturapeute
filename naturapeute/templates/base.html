@@ -7,6 +7,14 @@
 <link rel="stylesheet" href="{% static "css/main.css" %}">
 <link rel="stylesheet" href="{% static "css/trix.css" %}">
 <link rel="icon" type="image/png" href="{% static "/img/favicon.png" %}">
+<!-- Load Leaflet after css for good size calculation -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+    crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+    integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+    crossorigin=""></script>
+<script src="{% static "js/utils.js" %}"></script>
 
 <meta prefix="og: http://ogp.me/ns#" property="og:site_name" content="Naturapeute">
 {% block meta_og %}{% endblock %}
@@ -46,7 +54,6 @@
     </p>
   </div>
 </footer>
-
 
 <!-- Matomo -->
 <script type="text/javascript">

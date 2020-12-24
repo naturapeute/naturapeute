@@ -46,14 +46,14 @@
       {{ therapist.timetable }}
     </section>
 
-    {% with office=therapist.offices.first %}
+    {% for office in therapist.offices.all %}
     <section>
       <h2>Cabinet de {{ therapist.practice.name }} à {{ office.city }}</h2>
       <address>
         {{ office.street }}<br>
         {{ office.zipcode }} {{ office.city }}
       </address>
-      <div id="map"></div>
+      <div class="map" latlng="{{ office.coordinates | join:',' }}" zoom="9"></div>
     </section>
 
     {% if office.pictures.first %}
@@ -64,7 +64,7 @@
       {% endfor %}
     </section>
     {% endif %}
-    {% endwith %}
+    {% endfor %}
   </div>
 
   <aside>
@@ -114,7 +114,7 @@
     min-width: 300px;
   }
 
-  #map {
+  .map {
     width: 100%;
     height: 300px;
   }
@@ -167,17 +167,17 @@
   }
 </style>
 
-  {# After CSS for map sizing reasons #}
-  {% with lat=therapist.offices.first.latlng.0|stringformat:"s" lng=therapist.offices.first.latlng.1|stringformat:"s" %}
-  {% with latlng=lat|add:", "|add:lng %}
+{# After CSS for map sizing reasons #}
+<script>
+  document.querySelectorAll('.map').forEach((elem) => {
+    const latlng = elem.getAttribute('latlng').split(',')
+    const zoom = elem.getAttribute('zoom')
+    const map = initMap(elem, latlng, zoom)
+    const marker = L.marker(latlng).addTo(map)
 
-    {% map latlng=latlng zoom=9 %}
-    <script>
-      document.querySelector('#contactButton').addEventListener('click', () => {
-        document.querySelector('#contactInfos').classList.remove('hidden')
-      })
-      const marker = L.marker([{{latlng}}]).addTo(map)
-    </script>
-  {% endwith %}
-  {% endwith %}
+    document.querySelector('#contactButton').addEventListener('click', () => {
+      document.querySelector('#contactInfos').classList.remove('hidden')
+    })
+  })
+</script>
 {% endblock %}

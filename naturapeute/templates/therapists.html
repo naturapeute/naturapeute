@@ -39,7 +39,7 @@
     </div>
   </section>
   <aside>
-    <div id="map"></div>
+    <div class="map"></div>
   </aside>
 </div>
 
@@ -78,7 +78,7 @@
     flex-direction: row;
   }
 
-  #map {
+  .map {
     min-height: 300px;
     height: 100vh;
     position: sticky !important;
@@ -186,21 +186,24 @@
   }
 </style>
 {% if therapists %}
-  {% map latlng='46.5, 6.5' zoom=9 %}
 <script>
+  const map = initMap(document.querySelector('.map'), ['46.5', '6.5'], '9')
+
   const therapists = [
     {% for therapist in therapists %}
-      {% if therapist.offices.first.latlng.0 %}
-      {
-        id: "{{therapist.id}}",
-        name: "{{therapist.name}}",
-        therapy: "{{therapist.practice.name}}",
-        label: "{{therapist.name}} — {{ therapist.practice }}",
-        latlng: [{{ therapist.offices.first.latlng.0}}, {{therapist.offices.first.latlng.1 }}],
-        url: "{{therapist.slug}}/{{therapist.id}}",
-        photo: `{{ therapist.photo_url }}`,
-      },
-      {% endif %}
+      {% for office in therapist.offices.all %}
+        {% if office.coordinates %}
+        {
+          id: "{{therapist.id}}",
+          name: "{{therapist.name}}",
+          therapy: "{{therapist.practice.name}}",
+          label: "{{therapist.name}} — {{ therapist.practice }}",
+          latlng: {{ office.coordinates }},
+          url: "{{therapist.slug}}/{{therapist.id}}",
+          photo_url: `{{ therapist.photo_url }}`,
+        },
+        {% endif %}
+      {% endfor %}
     {% endfor %}
   ]
   const markers = therapists.map(therapist => {
