@@ -253,6 +253,11 @@ class Therapist(models.Model):
             url = self.photo.url
         return url
 
+    @property
+    def languages_verbose(self):
+        languages = dict(LANGUAGES)
+        return [languages[l] for l in self.languages if l in languages]
+
 
 @receiver(post_save, sender=Therapist)
 def therapist_create_slug(sender, instance, **kwargs):
