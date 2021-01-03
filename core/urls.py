@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from graphene_django.views import GraphQLView
 
 from naturapeute import views as naturapeute_views
 from blog import views as blog_views
@@ -29,6 +31,7 @@ urlpatterns = [
 
     path("api/therapist/<email_or_pk>", api_views.TherapistView.as_view(), name="api_therapist"),
     path("api/therapist/<id>", api_views.TherapistView.as_view(), name="api_therapist"),
+    path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True))),
 
     path("journal/", blog_views.HomeView.as_view(), name="blog"),
     path("journal/<slug>/", blog_views.ArticleView.as_view(), name="article"),

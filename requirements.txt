@@ -1,6 +1,8 @@
 django
 django-better-admin-arrayfield
 django-cors-headers
+django-filter
+graphene-django==3.0.0b7
 psycopg2-binary
 pymongo  # only for importing from old mongo
 Pillow
