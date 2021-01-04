@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'graphene_django',
     'django.contrib.postgres',
     'django_better_admin_arrayfield',
+    'core',
     'corsheaders',
     'naturapeute',
     'blog',

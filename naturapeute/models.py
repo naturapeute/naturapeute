@@ -255,6 +255,8 @@ class Therapist(models.Model):
 
     @property
     def languages_verbose(self):
+        if not self.languages:
+            return []
         languages = dict(LANGUAGES)
         return [languages[l] for l in self.languages if l in languages]
 

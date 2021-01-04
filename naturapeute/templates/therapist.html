@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load tags %}
+{% load tags utils %}
 
 {% block meta_title %}{{ therapist.name }}, {{ therapist.practice.name }} à {{ therapist.city }}{% endblock %}
 
@@ -28,23 +28,29 @@
     <section>
       <h2>À propos</h2>
       <p>
-        {{ therapist.description }}
+        {{ therapist.description|markdown }}
       </p>
+      {% if therapist.languages %}
       <p>
         {{ therapist }} parle {{ therapist.languages_verbose | join:', ' }}
       </p>
+      {% endif %}
     </section>
 
+    {% if therapist.price %}
     <section>
       <h2>Paiement</h2>
       {{ therapist.price }}
       <p>Moyens de paiement : {{ therapist.payment_types|join:', ' }}</p>
     </section>
+    {% endif %}
 
+    {% if therapist.timetable %}
     <section>
       <h2>Horaires</h2>
       {{ therapist.timetable }}
     </section>
+    {% endif %}
 
     {% for office in therapist.offices.all %}
     <section>
