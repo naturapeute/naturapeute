@@ -38,6 +38,15 @@ class Article(Slugable, models.Model):
     def reading_time(self):
         return round((wordcount(striptags(self.body)) / 225) + .5)
 
+    @property
+    def image_url(self):
+        url = self.image
+        if not self.image.name and self.gender:
+            return f"/static/img/avatar-{self.gender}.png"
+        if url and not str(url).startswith("http"):
+            url = self.image.url
+        return url
+
     class Meta:
         ordering = ["-creation_date"]
 

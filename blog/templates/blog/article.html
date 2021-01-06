@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load utils %}
 
 {% block meta_title %}{{ article.title }} – Naturapeute{% endblock %}
 
@@ -26,10 +27,10 @@
     {% endfor %}
   </header>
   {% if article.image %}
-  <img src="{{ article.image }}" alt="image pour « {{ article.title }} »" id=article-image>
+  <img src="{{ article.image_url }}" alt="image pour « {{ article.title }} »" id=article-image>
   {% endif %}
 
-  {{ article.body|safe }}
+  {{ article.body|markdown }}
 
   <footer>
     <p>Article rédigé le <time>{{ article.creation_date|date:"DATE_FORMAT" }}</time></p>
