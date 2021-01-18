@@ -6,6 +6,8 @@
 {% block meta_description %}{{ therapist.name }} est thérapeute agréé {{ therapist.agreements|join:', ' }} en {{ therapist.practice.name }} à {{ therapist.city }}.
 {{ therapist.description|truncatechars:150 }}{% endblock %}
 
+{% block body_id %}therapist-page{% endblock %}
+
 {% block content %}
 <article>
   <div>
@@ -84,7 +86,7 @@
     </ul>
 
     <ul id=contactInfos class=hidden>
-      <li><a href="tel:{{ therapist.phone }}" title="Contacter {{ therapist }} par téléphone"><i class="fa fa-phone fa-flip-horizontal"></i> Tel: {{ therapist.phone }}</a></li>
+      <li><a href="tel:{{ therapist.phone }}" title="Contacter {{ therapist }} par téléphone"><i class="fa fa-phone fa-flip-horizontal"></i> {{ therapist.phone }}</a></li>
       <li><i class="fa fa-envelope"></i> <a href="mailto:{{ therapist.email }}" title="Contacter {{therapist}} par email">Envoyer un email</a></li>
     </ul>
     <button class=primary id=contactButton><i class="fa fa-phone fa-flip-horizontal"> </i> Contacter</button>

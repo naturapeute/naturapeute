@@ -19,54 +19,56 @@
 <meta prefix="og: http://ogp.me/ns#" property="og:site_name" content="Naturapeute">
 {% block meta_og %}{% endblock %}
 
-<header class="row spaced">
-  <div class="container">
-    <h1>
-      <a href="/" title="Retour à l'accueil">
-        <img alt="Naturapeute.ch" height=35 src="{% static "img/naturapeute-enseigne.png" %}">
-      </a>
-    </h1>
-    <nav>
-      <a href="{% url 'therapists' %}" class="therapist iconed" title="Consulter les thérapeutes du réseau">Les thérapeutes</a>
-      <a href=/journal class="journal iconed" title="Articles autour des thérapies complémentaires">Le journal</a>
-    </nav>
-  </div>
-</header>
-
-<main class="{% block body_class %}{% endblock %}">
-  {% block content %}{% endblock %}
-</main>
-
-<footer class=row>
-  <div class=innersection>
-    <div class=secondary>
-      <a href="/journal/salons-et-evenements-autour-des-therapies-complementaires" title="Salons et rencontres autour des thérapies">Salons et rencontres</a>
-      <a href="https://pro.naturapeute.ch" target="_blank" title="Réseau thérapeutes en Suisse">Espace Thérapeute</a>
-      <a href="/charte.html">Charte</a>
-      <a href="/policy.html">Conditions d'utilisation</a>
-      <a href="/privacy.html">Confidentialité</a>
-      <a href="/navigation.html">Navigation</a>
-      <a href="mailto:contact@naturapeute.ch">Nous contacter</a>
+<body id="{% block body_id %}{% endblock %}">
+  <header class="row spaced">
+    <div class="container">
+      <h1>
+        <a href="/" title="Retour à l'accueil">
+          <img alt="Naturapeute.ch" height=35 src="{% static "img/naturapeute-enseigne.png" %}">
+        </a>
+      </h1>
+      <nav>
+        <a href="{% url 'therapists' %}" class="therapist iconed" title="Consulter les thérapeutes du réseau">Les thérapeutes</a>
+        <a href=/journal class="journal iconed" title="Articles autour des thérapies complémentaires">Le journal</a>
+      </nav>
     </div>
+  </header>
 
-    <p class=copyright>
-      <a href=http://naturapeute.ch>Naturapeute</a> est un projet de Mesure Bien Être, SARL déposée en Suisse.
-    </p>
-  </div>
-</footer>
+  <main class="{% block body_class %}{% endblock %}">
+    {% block content %}{% endblock %}
+  </main>
 
-<!-- Matomo -->
-<script type="text/javascript">
-  var _paq = window._paq || [];
-  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  (function() {
-    var u="//stats.anonym.dev/";
-    _paq.push(['setTrackerUrl', u+'matomo.php']);
-    _paq.push(['setSiteId', '2']);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-  })();
-</script>
-<!-- End Matomo Code -->
+  <footer class=row>
+    <div class=innersection>
+      <div class=secondary>
+        <a href="/journal/salons-et-evenements-autour-des-therapies-complementaires" title="Salons et rencontres autour des thérapies">Salons et rencontres</a>
+        <a href="https://pro.naturapeute.ch" target="_blank" title="Réseau thérapeutes en Suisse">Espace Thérapeute</a>
+        <a href="/charte.html">Charte</a>
+        <a href="/policy.html">Conditions d'utilisation</a>
+        <a href="/privacy.html">Confidentialité</a>
+        <a href="/navigation.html">Navigation</a>
+        <a href="mailto:contact@naturapeute.ch">Nous contacter</a>
+      </div>
+
+      <p class=copyright>
+        <a href=http://naturapeute.ch>Naturapeute</a> est un projet de Mesure Bien Être, SARL déposée en Suisse.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Matomo -->
+  <script type="text/javascript">
+    var _paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="//stats.anonym.dev/";
+      _paq.push(['setTrackerUrl', u+'matomo.php']);
+      _paq.push(['setSiteId', '2']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+    })();
+  </script>
+  <!-- End Matomo Code -->
+</body>

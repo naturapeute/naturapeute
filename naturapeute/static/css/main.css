@@ -290,4 +290,29 @@ section.notification {
   body > footer a {
     padding: .8rem;
   }
+
+  #therapists-page main > .wrapper {
+    display: initial;
+  }
+  #therapists-page aside {
+    width: auto;
+  }
+  #therapists-page #content {
+    width: auto;
+  }
+  #therapists-page .map {
+    max-height: 50vh;
+  }
+
+  #therapist-page aside {
+    margin: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    background: white;
+    box-shadow: 0 -1px 10px #ddd;
+    z-index: 1000; /* Above the map and its cursors */
+    padding: 1rem;
+  }
 }
