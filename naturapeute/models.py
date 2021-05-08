@@ -152,6 +152,7 @@ LANGUAGES = (
     ("es", "espagnol"),
     ("nl", "néerlandais"),
     ("pl", "polonais"),
+    ("pt", "portugais"),
 )
 
 
