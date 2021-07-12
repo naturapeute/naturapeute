@@ -1,6 +1,6 @@
 deploy:
 	ssh naturapeute "\
-		cd prod && \
+		cd naturapeute && \
 		source venv/bin/activate && \
 		git pull && \
 		pip install -r requirements.txt && \
@@ -12,7 +12,7 @@ deploy:
 restart-server:
 	ssh naturapeute "\
 		sudo systemctl daemon-reload && \
-		sudo systemctl restart naturapeute &&\
+		sudo systemctl restart naturapeute && \
 		echo 'server restarted'"
 
 import_from_mongo:

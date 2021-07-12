@@ -35,7 +35,9 @@
           <span class=tag title="{{ therapist.therapy }} agréé {{ agreement }}">{{ agreement | upper }}</span>
           {% endfor %}
         </footer>
+        {% if therapist.slug %}
         <a href="{% url 'therapist' therapist.slug0 therapist.slug1 %}" title="{{ therapist.name }} est {{ therapist.practice.name }} à {{ therapist.city }}">Voir ce {{ therapist.practices.0.name }} à {{ therapist.city }}</a>
+        {% endif %}
       </article>
       {% endfor %}
     </div>
