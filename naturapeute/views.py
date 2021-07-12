@@ -21,7 +21,7 @@ class HomeView(TemplateView):
         return context
 
 
-class TherapistsView(ListView):
+class TherapistByPractice(ListView):
     template_name = "therapists.html"
     model = Therapist
     context_object_name = "therapists"
@@ -29,20 +29,33 @@ class TherapistsView(ListView):
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
-        params = self.request.GET
+        qs = qs.filter(practice__slug__in=self.kwargs.practice)
+
+
+class TherapistsView(ListView):
+    template_name = "therapists.html"
+    model = Therapist
+    context_object_name = "therapists"
+    queryset = Therapist.members.all()
+
+    def get(self, request, *args, **kwargs):
         practice_arg = self.kwargs.get("practice")
-        practice_name = params.get("practice")
-        if practice_name:
+        if practice_arg:
             try:
                 practice = Practice.objects.get(name=practice_name)
             except Pratice.DoesNotExist:
                 pass
             else:
                 return redirect("therapists_practice", practice.slug)
-        elif practice_arg:
-            qs = qs.filter(practices=practice).distinct()
+        return super().get(request, *args, **kwargs)
 
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        params = self.request.GET
         symptom_name = params.get("symptom")
+        practice_slug = self.kwargs.get("practice")
+        if practice_slug:
+            qs = qs.filter(practices__slug__in=practice_slug).distinct()
         if symptom_name:
             symptoms = Symptom.objects.search(symptom_name)
             qs = qs.filter(symptoms__in=symptoms).distinct()
