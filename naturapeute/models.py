@@ -153,6 +153,7 @@ LANGUAGES = (
     ("nl", "néerlandais"),
     ("pl", "polonais"),
     ("pt", "portugais"),
+    ("ro", "roumain"),
 )
 
 
