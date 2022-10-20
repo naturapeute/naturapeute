@@ -133,6 +133,7 @@ class OfficePicture(models.Model):
 
 
 MEMBERSHIPS = (
+    ("pending", "En attente / suspendu"),
     ("invitee", "Invité"),
     ("member", "Membre"),
     ("premium", "Payant"),
