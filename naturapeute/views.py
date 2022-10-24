@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView, ListView, View
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, reverse
 from django.shortcuts import redirect, reverse
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 
 import vobject
 
@@ -73,6 +73,13 @@ class TherapistView(TemplateView):
             raise Http404(f"Therapist not found with slug {slug}")
         return {"therapist": therapist}
 
+    def get(self, request, *args, **kwargs):
+        therapist = self.get_context_data()["therapist"]
+        if therapist.membership == "pending":
+            return HttpResponseRedirect(reverse("therapists"))
+        else:
+            return super().get(request, *args, **kwargs)
+
 
 class TherapistVcardView(View):
     def get(self, *args, **kwargs):
@@ -82,11 +89,18 @@ class TherapistVcardView(View):
         )
         office = therapist.offices.first()
         card.add("n")
-        card.n.value = vobject.vcard.Name(family=therapist.lastname, given=therapist.firstname)
+        card.n.value = vobject.vcard.Name(
+            family=therapist.lastname, given=therapist.firstname
+        )
         card.add("email")
         card.email.value = therapist.email
         card.add("adr")
-        card.adr.value = vobject.vcard.Address(street=office.street, city=office.city, code=office.zipcode, country=office.country)
+        card.adr.value = vobject.vcard.Address(
+            street=office.street,
+            city=office.city,
+            code=office.zipcode,
+            country=office.country,
+        )
         response = HttpResponse(str(card), content_type="text/vcard")
         response["Content-Disposition"] = f'attachment; filename="{therapist}.vcf"'
         return response
