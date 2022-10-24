@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django_better_admin_arrayfield.admin.mixins import DynamicArrayMixin
 from django.utils.html import format_html
 
 from .models import Patient, Therapist, Symptom, Practice, Office, OfficePicture, Synonym, models
@@ -24,7 +23,7 @@ class OfficeInline(admin.StackedInline):
 
 
 @admin.register(Therapist)
-class TherapistAdmin(admin.ModelAdmin, DynamicArrayMixin):
+class TherapistAdmin(admin.ModelAdmin):
     list_display = ["__str__", "image_tag", "agreements", "slug"]
     list_filter = ["is_certified", "membership"]
     search_fields = ["firstname", "lastname", "slug"]
@@ -41,22 +40,22 @@ class TherapistAdmin(admin.ModelAdmin, DynamicArrayMixin):
 
 
 @admin.register(Practice)
-class PracticeAdmin(admin.ModelAdmin, DynamicArrayMixin):
+class PracticeAdmin(admin.ModelAdmin):
     pass
 
 
 @admin.register(Symptom)
-class SymptomAdmin(admin.ModelAdmin, DynamicArrayMixin):
+class SymptomAdmin(admin.ModelAdmin):
     list_display = ["parent", "__str__"]
     list_display_links = ["__str__"]
     search_fields = ["name", "keywords"]
 
 
 @admin.register(Synonym)
-class SynonymAdmin(admin.ModelAdmin, DynamicArrayMixin):
+class SynonymAdmin(admin.ModelAdmin):
     list_display = ["__str__", "words"]
 
 
 @admin.register(Patient)
-class PatientAdmin(admin.ModelAdmin, DynamicArrayMixin):
+class PatientAdmin(admin.ModelAdmin):
     pass
