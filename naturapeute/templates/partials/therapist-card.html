@@ -4,7 +4,7 @@
 <h1>{{ therapist.name }}</h1>
 {% avatar therapist %}
 <div>
-    <p>{{ therapist.city }}</p>
+    <p>{{ therapist.practice }} à {{ therapist.city }}</p>
     <div class=therapies-list>
     {% if therapists %}
         {% for therapy in therapist.therapies %}
