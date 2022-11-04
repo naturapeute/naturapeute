@@ -35,9 +35,9 @@ class TherapistAdmin(admin.ModelAdmin, DynamicArrayMixin):
         return format_html(f'<img src="{obj.photo_url}" style="width: 45px; height:45px;" />')
     image_tag.short_description = 'Photo'
 
-    formfield_overrides = {
-        models.ManyToManyField: {'widget': models.fields.forms.widgets.CheckboxSelectMultiple }
-    }
+    # formfield_overrides = {
+    #     models.ManyToManyField: {'widget': models.fields.forms.widgets.CheckboxSelectMultiple }
+    # }
 
 
 @admin.register(Practice)
