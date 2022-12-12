@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% load static %}
 {% load tags %}
 
 {% block content %}
@@ -101,7 +102,7 @@
       <img src="https://esclarmonde.net/wp-content/themes/esclarmonde/img/logo_w.png" id=logo-esclarmonde alt="Ecole d'Esclarmonde">
     </a>
     <a href=https://www.satoriz.fr/magasin-bio/satoriz-thoiry/ target="_blank">
-      <img src="https://www.satoriz.fr/wp-content/themes/Satoriz/images/logo.png" id=logo-satoriz alt="Satoriz Thoiry">
+      <img src="{% static "img/partenaire-logo-satoriz.png" %}" height=80 id=logo-satoriz alt="Satoriz Thoiry">
     </a>
   </nav>
   <p>
