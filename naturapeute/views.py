@@ -2,6 +2,7 @@ from django.views.generic import TemplateView, ListView, View
 from django.views.generic.base import RedirectView, reverse
 from django.shortcuts import redirect, reverse
 from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.db.models import Q
 
 import vobject
 
@@ -39,11 +40,11 @@ class TherapistsView(ListView):
     queryset = Therapist.members.all()
 
     def get(self, request, *args, **kwargs):
-        practice_arg = self.kwargs.get("practice")
-        if practice_arg:
+        practice_name = self.request.GET.get("practice")
+        if practice_name:
             try:
                 practice = Practice.objects.get(name=practice_name)
-            except Pratice.DoesNotExist:
+            except Practice.DoesNotExist:
                 pass
             else:
                 return redirect("therapists_practice", practice.slug)
@@ -53,9 +54,9 @@ class TherapistsView(ListView):
         qs = super().get_queryset(*args, **kwargs)
         params = self.request.GET
         symptom_name = params.get("symptom")
-        practice_slug = self.kwargs.get("practice")
+        practice_slug = self.kwargs.get("practice_slug")
         if practice_slug:
-            qs = qs.filter(practices__slug__in=practice_slug).distinct()
+            qs = qs.filter(Q(practices__slug__in=[practice_slug]) | Q(practice__slug=practice_slug)).distinct()
         if symptom_name:
             symptoms = Symptom.objects.search(symptom_name)
             qs = qs.filter(symptoms__in=symptoms).distinct()
