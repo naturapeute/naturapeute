@@ -155,6 +155,7 @@ LANGUAGES = (
     ("pl", "polonais"),
     ("pt", "portugais"),
     ("ro", "roumain"),
+    ("ho", "hongrois"),
 )
 
 
