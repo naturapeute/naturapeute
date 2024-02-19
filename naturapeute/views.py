@@ -55,8 +55,9 @@ class TherapistsView(ListView):
         params = self.request.GET
         symptom_name = params.get("symptom")
         practice_slug = self.kwargs.get("practice_slug")
+        practice = Practice.objects.get(slug=practice_slug)
         if practice_slug:
-            qs = qs.filter(Q(practices__slug__in=[practice_slug]) | Q(practice__slug=practice_slug)).distinct()
+            qs = qs.filter(Q(practices__in=[practice]) | Q(practice=practice)).distinct()
         if symptom_name:
             symptoms = Symptom.objects.search(symptom_name)
             qs = qs.filter(symptoms__in=symptoms).distinct()
