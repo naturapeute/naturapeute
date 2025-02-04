@@ -45,6 +45,7 @@ class Practice(models.Model):
         return str(self.name)
 
     class Meta:
+        """Meta options for Practice model."""
         ordering = ["slug"]
 
 
@@ -75,6 +76,7 @@ class Symptom(models.Model):
         return str(self.name)
 
     class Meta:
+        """Meta options for Symptom model."""
         ordering = ["name"]
 
 
@@ -97,6 +99,7 @@ class Synonym(models.Model):
         return self.name
 
     class Meta:
+        """Meta options for Synonym model."""
         ordering = ["name"]
 
 
@@ -121,6 +124,7 @@ class Office(models.Model):
 
 
 class OfficePicture(models.Model):
+    """Represents pictures associated with a therapist's office."""
     def upload_to(self, *args, **kwargs):
         return f"offices/{self.uuid}"
 
@@ -160,17 +164,37 @@ LANGUAGES = (
 
 
 class TherapistMembersManager(models.Manager):
+    """Custom manager that filters therapists with 'member' status."""
     def get_queryset(self):
         return super().get_queryset().filter(membership="member")
 
 
 class TherapistInviteesManager(models.Manager):
+    """Custom manager that filters therapists with 'invitee' status."""
     def get_queryset(self):
+        """
+        Return queryset filtered for invitee therapists.
+        
+        Returns:
+            QuerySet: Filtered queryset containing only invitee therapists
+        """
         return super().get_queryset().filter(membership="invitee")
 
 
 class Therapist(models.Model):
+    """
+    Represents a therapist in the system.
+    
+    This model stores comprehensive information about therapists including their
+    personal details, professional information, office locations, and credentials.
+    """
     def upload_to(self, *args, **kwargs):
+        """
+        Determine the upload path for therapist photos.
+        
+        Returns:
+            str: Path where the photo should be stored
+        """
         return f"therapists/{slugify(self.slug)}"
 
     slug = models.SlugField(max_length=100, unique=True, null=True)
@@ -211,14 +235,17 @@ class Therapist(models.Model):
 
     @property
     def slug0(self):
+        """Get the first part of the slug."""
         return self.slug.split("/")[0]
 
     @property
     def slug1(self):
+        """Get the second part of the slug."""
         return self.slug.split("/")[1]
 
     @property
     def name(self):
+        """Get the full name of the therapist."""
         if self.firstname:
             return f"{self.firstname} {self.lastname}"
         else:
@@ -226,6 +253,7 @@ class Therapist(models.Model):
 
     @property
     def office(self):
+        """Get the primary office of the therapist."""
         return self.offices.first()
 
     @property
@@ -234,6 +262,15 @@ class Therapist(models.Model):
             return self.office.city
 
     def get_social(self, name):
+        """
+        Get the URL for a specific social media profile.
+        
+        Args:
+            name (str): Name of the social media platform
+            
+        Returns:
+            str: URL of the social media profile if found, None otherwise
+        """
         if not self.socials:
             return
         matches = [eval(s) for s in self.socials if eval(s)["name"] == name]
@@ -242,14 +279,21 @@ class Therapist(models.Model):
 
     @property
     def website(self):
+        """Get the therapist's website URL."""
         return self.get_social("website")
 
     @property
     def facebook(self):
+        """Get the therapist's Facebook profile URL."""
         return self.get_social("facebook")
 
     @property
     def photo_url(self):
+        """
+        Get the URL for the therapist's photo.
+        
+        Returns a default avatar if no photo is set.
+        """
         url = self.photo
         if not self.photo.name and self.gender:
             return f"/static/img/avatar-{self.gender}.png"
@@ -259,6 +303,7 @@ class Therapist(models.Model):
 
     @property
     def languages_verbose(self):
+        """Get list of languages in verbose form."""
         if not self.languages:
             return []
         languages = dict(LANGUAGES)
@@ -267,6 +312,11 @@ class Therapist(models.Model):
 
 @receiver(post_save, sender=Therapist)
 def therapist_create_slug(sender, instance, **kwargs):
+    """
+    Signal handler to automatically create slugs for therapist instances.
+    
+    Creates a slug combining practice name, city (if available), and therapist name.
+    """
     post_save.disconnect(therapist_create_slug, sender=sender)
     part1 = instance.practice.slug
     if instance.offices.count():
@@ -278,6 +328,12 @@ def therapist_create_slug(sender, instance, **kwargs):
 
 
 class Patient(models.Model):
+    """
+    Represents a patient in the system.
+    
+    This model stores patient information including personal details
+    and contact information.
+    """
     firstname = models.CharField(max_length=100, null=True, blank=True)
     lastname = models.CharField(max_length=100)
     gender = models.CharField(max_length=6, choices=GENDERS, null=True, blank=True)
@@ -292,11 +348,18 @@ class Patient(models.Model):
     city = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
+        """Get string representation of the patient."""
         if(self.firstname):
             return f"{self.firstname} {self.lastname}"
         return self.lastname
 
     def to_json(self):
+        """
+        Convert patient data to JSON format.
+        
+        Returns:
+            dict: Patient data in dictionary format
+        """
         data = self.__dict__
         del data["_state"]
         data["birthdate"] = time.mktime(self.birthdate.timetuple()) * 1000
@@ -304,6 +367,12 @@ class Patient(models.Model):
 
 
 class TherapistPatient(models.Model):
+    """
+    Represents the relationship between therapists and their patients.
+    
+    This is a through model for the many-to-many relationship between
+    Therapist and Patient models.
+    """
     therapist = models.ForeignKey(Therapist, on_delete=models.CASCADE)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now_add=True)
