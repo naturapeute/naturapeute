@@ -71,8 +71,8 @@ class TherapistView(TemplateView):
         slug = f"{self.kwargs['slug0']}/{self.kwargs['slug1']}"
         try:
             therapist = Therapist.mixed.get(slug=slug)
-        except Therapist.DoesNotExist:
-            raise Http404(f"Therapist not found with slug {slug}")
+        except Therapist.DoesNotExist as exc:
+            raise Http404(f"Therapist not found with slug {slug}") from exc
         return {"therapist": therapist}
 
     def get(self, request, *args, **kwargs):
@@ -106,9 +106,9 @@ class TherapistVcardView(View):
         response = HttpResponse(str(card), content_type="text/vcard")
         response["Content-Disposition"] = f'attachment; filename="{therapist}.vcf"'
         return response
-        raise Error("WIP Implementing fields and returning response")
 
 
 class TherapistOldView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
+        """Return URL for redirecting old therapist URLs to new format."""
         return f"/therapeutes/{kwargs['slug0']}/{kwargs['slug1']}/"
