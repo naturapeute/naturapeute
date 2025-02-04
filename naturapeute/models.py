@@ -210,15 +210,33 @@ class Therapist(models.Model):
     languages = ArrayField(models.CharField(max_length=2, choices=LANGUAGES), null=True, blank=True)
     photo = models.ImageField(upload_to=upload_to, max_length=255, null=True, blank=True)
     socials = ArrayField(models.TextField(), null=True, blank=True)
-    practice = models.ForeignKey(Practice, verbose_name="Pratique principale", related_name="experts", on_delete=models.RESTRICT)
-    practices = models.ManyToManyField(Practice, verbose_name="Autres pratiques", related_name="therapists", blank=True)
+    practice = models.ForeignKey(
+        Practice,
+        verbose_name="Pratique principale",
+        related_name="experts",
+        on_delete=models.RESTRICT
+    )
+    practices = models.ManyToManyField(
+        Practice,
+        verbose_name="Autres pratiques",
+        related_name="therapists",
+        blank=True
+    )
     agreements = ArrayField(models.CharField(max_length=50), null=True, blank=True)
     payment_types = ArrayField(models.CharField(max_length=20), null=True, blank=True)
     symptoms = models.ManyToManyField(Symptom, related_name="therapists", blank=True)
     membership = models.CharField(max_length=20, choices=MEMBERSHIPS)
-    patients = models.ManyToManyField("Patient", through="TherapistPatient", related_name="therapists")
+    patients = models.ManyToManyField(
+        "Patient",
+        through="TherapistPatient",
+        related_name="therapists"
+    )
     invoice_data = models.JSONField(default=invoice_data, null=True, blank=True)
-    services = ArrayField(models.IntegerField(), null=True, blank=True)
+    services = ArrayField(
+        models.IntegerField(),
+        null=True,
+        blank=True
+    )
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
 
