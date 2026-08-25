@@ -2,3 +2,7 @@
 *.pyc
 /local_settings.py
 /uploads/
+/static/
+*.DS_Store
+.env
+/server-copy/

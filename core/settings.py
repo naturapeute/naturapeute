@@ -14,11 +14,23 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = ''
+def env_bool(name, default=False):
+    return os.environ.get(name, str(default)).strip().lower() in {"1", "true", "yes", "on"}
 
-DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+def env_list(name, default=""):
+    return [
+        value.strip()
+        for value in os.environ.get(name, default).split(",")
+        if value.strip()
+    ]
+
+
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
+
+DEBUG = env_bool("DJANGO_DEBUG")
+
+ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "*")
 
 
 # Application definition
@@ -77,11 +89,21 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'naturapeute',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("POSTGRES_DB", "naturapeute"),
     }
 }
+
+for option, variable in {
+    "USER": "POSTGRES_USER",
+    "PASSWORD": "POSTGRES_PASSWORD",
+    "HOST": "POSTGRES_HOST",
+    "PORT": "POSTGRES_PORT",
+}.items():
+    value = os.environ.get(variable)
+    if value:
+        DATABASES["default"][option] = value
 
 
 # Password validation
@@ -131,6 +153,9 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# Keep the existing AutoField-based schema stable when new models are added.
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 GRAPHENE = {
     'SCHEMA': 'api.graphql.schema' # Where your Graphene schema lives
