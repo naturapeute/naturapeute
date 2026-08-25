@@ -1,0 +1,17 @@
+.git
+.vscode
+.env
+local_settings.py
+
+/venv/
+/venv.old/
+/static/
+/uploads/
+/backups/
+/dump.sql
+/dump.tar
+/server-copy/
+
+__pycache__/
+*.py[cod]
+*.DS_Store

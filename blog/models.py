@@ -8,9 +8,9 @@ class Slugable:
     slug_from_field = ""
 
     def save(self, *args, **kwargs):
-      if not self.slug:
-          self.slug = getattr(self, self.slug_from_field)
-      return super().save(args, kwargs)
+        if not self.slug:
+            self.slug = slugify(getattr(self, self.slug_from_field))
+        return super().save(*args, **kwargs)
 
 
 class Article(Slugable, models.Model):
