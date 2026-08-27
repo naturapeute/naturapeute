@@ -11,7 +11,7 @@ TEABLE_ASSET_APP ?= server-copy/20260825-145618/app
 
 deploy:
 	ssh "$(REMOTE_HOST)" "\
-		sudo lxc exec $(REMOTE_CONTAINER) -- bash -lc 'cd $(REMOTE_APP) && \
+		sudo lxc exec $(REMOTE_CONTAINER) -- sudo -u ubuntu bash -lc 'cd $(REMOTE_APP) && \
 		source venv/bin/activate && \
 		git pull && \
 		pip install -r requirements.txt && \
