@@ -19,5 +19,7 @@
     <span class=tag title="{{ therapist.therapy.name }} agréé {{ agreement }}">{{ agreement | upper }}</span>
     {% endfor %}
 </footer>
+{% if therapist.slug0 and therapist.slug1 %}
 <a class=card-link href="{% url 'therapist' therapist.slug0 therapist.slug1 %}" title="{{ therapist.name }} est {# therapist.therapies_name | join(', ') #} à {{ therapist.city }}">Voir ce {{ therapist.therapies }} à {{ therapist.city }}</a>
+{% endif %}
 </article>

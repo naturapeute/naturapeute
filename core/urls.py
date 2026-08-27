@@ -21,7 +21,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 
-from naturapeute import views as naturapeute_views
+from naturapeute import account_views, views as naturapeute_views
 from blog import views as blog_views
 from api import views as api_views
 
@@ -35,6 +35,11 @@ urlpatterns = [
 
     path("journal/", blog_views.HomeView.as_view(), name="blog"),
     path("journal/<slug>/", blog_views.ArticleView.as_view(), name="article"),
+
+    path("account/", account_views.AccountView.as_view(), name="account"),
+    path("account/verify/<str:token>/", account_views.AccountVerifyView.as_view(), name="account_verify"),
+    path("account/profile/", account_views.AccountProfileView.as_view(), name="account_profile"),
+    path("account/logout/", account_views.AccountLogoutView.as_view(), name="account_logout"),
 
     path("therapeutes/", naturapeute_views.TherapistsView.as_view(), name="therapists"),
     path("therapeutes/<practice_slug>/", naturapeute_views.TherapistsView.as_view(), name="therapists_practice"),

@@ -5,6 +5,9 @@ SERVER_COPY ?= server-copy/$(shell date +%Y%m%d-%H%M%S)
 POSTGRES_DATABASE ?= naturapeute
 MONGO_URI ?= mongodb://host.docker.internal:27017/terrapeute
 MONGO_DATABASE ?= terrapeute
+TEABLE_BASE_ID ?= bsed9fsIVcrGiEVRYCo
+TEABLE_API_TOKEN ?=
+TEABLE_ASSET_APP ?= server-copy/20260825-145618/app
 
 deploy:
 	ssh naturapeute "\
@@ -30,6 +33,36 @@ import-from-mongo:
 		web python manage.py shell -c "import mongo2pg; mongo2pg.import_all()"
 
 import_from_mongo: import-from-mongo
+
+import-to-teable:
+	@docker compose run --rm \
+		-e TEABLE_BASE_ID="$(TEABLE_BASE_ID)" \
+		-e TEABLE_API_TOKEN="$(TEABLE_API_TOKEN)" \
+		-v "$(CURDIR)/$(TEABLE_ASSET_APP):/server-assets:ro" \
+		web python manage.py import_to_teable \
+			--asset-root /server-assets/uploads \
+			--asset-root /server-assets/static/img
+
+import_to_teable: import-to-teable
+
+configure-teable-fields:
+	@docker compose run --rm web python manage.py configure_teable_fields
+
+configure_teable_fields: configure-teable-fields
+
+normalize-images:
+	docker compose up -d db
+	docker compose run --rm --no-deps \
+		-v "$(CURDIR)/$(TEABLE_ASSET_APP)/uploads:/server-assets/uploads:rw" \
+		-v "$(CURDIR)/naturapeute/static/uploads:/source-static:rw" \
+		-v "$(CURDIR)/uploads:/legacy-uploads:rw" \
+		web python manage.py normalize_images \
+			--root /app/uploads \
+			--root /server-assets/uploads \
+			--root /source-static \
+			--root /legacy-uploads
+
+normalize_images: normalize-images
 
 download-from-server:
 	mkdir -p "$(SERVER_COPY)/app" "$(SERVER_COPY)/database"

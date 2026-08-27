@@ -31,6 +31,10 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
 DEBUG = env_bool("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "*")
+CSRF_TRUSTED_ORIGINS = env_list(
+    "DJANGO_CSRF_TRUSTED_ORIGINS",
+    "http://localhost:8000,http://127.0.0.1:8000",
+)
 
 
 # Application definition
@@ -168,6 +172,39 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 MEDIA_ROOT = BASE_DIR / 'uploads'
 MEDIA_URL = '/uploads/'
+
+TEABLE_API_URL = os.environ.get("TEABLE_API_URL", "https://app.teable.ai")
+TEABLE_BASE_ID = os.environ.get("TEABLE_BASE_ID", "")
+TEABLE_API_TOKEN = os.environ.get("TEABLE_API_TOKEN", "")
+try:
+    TEABLE_CACHE_SECONDS = float(os.environ.get("TEABLE_CACHE_SECONDS", "60"))
+except ValueError:
+    TEABLE_CACHE_SECONDS = 60.0
+TEABLE_ENABLED = env_bool(
+    "TEABLE_ENABLED",
+    bool(TEABLE_BASE_ID and TEABLE_API_TOKEN),
+)
+
+EMAIL_BACKEND = os.environ.get(
+    "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+)
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "contact@naturapeute.ch")
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
+try:
+    EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+except ValueError:
+    EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = env_bool("EMAIL_USE_TLS", True)
+try:
+    ACCOUNT_MAGIC_LINK_MAX_AGE = int(os.environ.get("ACCOUNT_MAGIC_LINK_MAX_AGE", "900"))
+    ACCOUNT_MAGIC_LINK_COOLDOWN_SECONDS = int(
+        os.environ.get("ACCOUNT_MAGIC_LINK_COOLDOWN_SECONDS", "60")
+    )
+except ValueError:
+    ACCOUNT_MAGIC_LINK_MAX_AGE = 900
+    ACCOUNT_MAGIC_LINK_COOLDOWN_SECONDS = 60
 
 CORS_ORIGIN_ALLOW_ALL = True
 

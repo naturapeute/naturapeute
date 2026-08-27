@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block meta_title %}Espace thérapeute{% endblock %}
+{% block content %}
+<section class="account-card">
+<h1>Espace thérapeute</h1>
+Indiquez l'adresse email associée à votre profil. Nous vous enverrons un lien de connexion sécurisé.
+{% if sent %}
+<div class="notice success">Si cette adresse correspond à un profil, un lien de connexion vient d'être envoyé.</div>
+{% endif %}
+{% if error %}
+<div class="notice error">{{ error }}</div>
+{% endif %}
+{% if login_url %}
+<div class="notice local-link"><a href="{{ login_url }}">Ouvrir le profil en développement local</a></div>
+{% endif %}
+<form method="post">
+{% csrf_token %}
+{{ form.non_field_errors }}
+{{ form.email.label_tag }}
+{{ form.email }}
+{{ form.email.errors }}
+<button type="submit">Recevoir mon lien de connexion</button>
+</form>
+</section>
+
+<style>
+  .account-card {
+    max-width: 38rem;
+    margin: 4rem auto;
+    padding: 2.5rem;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: .6rem;
+    box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .08);
+    line-height: 1.6;
+  }
+  .account-card h1 { margin: 0 0 .75rem; }
+  .account-card > form { margin-top: 2rem; }
+  .account-card label, .account-card input { display: block; width: 100%; }
+  .account-card input { box-sizing: border-box; margin-top: .4rem; padding: .75rem; border: 1px solid #aaa; border-radius: .3rem; font: inherit; }
+  .account-card button { margin-top: 1rem; padding: .75rem 1rem; border: 0; border-radius: .3rem; cursor: pointer; font: inherit; }
+  .notice { margin: 1.25rem 0; padding: .8rem 1rem; border-radius: .3rem; }
+  .success { color: #17633b; background: #e7f7ed; }
+  .error { color: #8a1c1c; background: #fdeaea; }
+  .local-link { background: #eef4ff; }
+  .errorlist { color: #a11; padding-left: 1.2rem; }
+  @media (max-width: 42rem) {
+    .account-card { margin: 2rem 1rem; padding: 1.5rem; }
+  }
+</style>
+{% endblock %}

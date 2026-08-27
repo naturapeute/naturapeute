@@ -5,11 +5,26 @@ x-django-environment: &django-environment
   DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-local-development-secret}
   DJANGO_DEBUG: ${DJANGO_DEBUG:-False}
   DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+  DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-http://localhost:8000,http://127.0.0.1:8000}
   POSTGRES_DB: ${POSTGRES_DB:-naturapeute}
   POSTGRES_USER: ${POSTGRES_USER:-naturapeute}
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-naturapeute}
   POSTGRES_HOST: db
   POSTGRES_PORT: 5432
+  TEABLE_API_URL: ${TEABLE_API_URL:-https://app.teable.ai}
+  TEABLE_BASE_ID: ${TEABLE_BASE_ID:-}
+  TEABLE_API_TOKEN: ${TEABLE_API_TOKEN:-}
+  TEABLE_CACHE_SECONDS: ${TEABLE_CACHE_SECONDS:-60}
+  TEABLE_ENABLED: ${TEABLE_ENABLED:-True}
+  EMAIL_BACKEND: ${EMAIL_BACKEND:-django.core.mail.backends.console.EmailBackend}
+  DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-contact@naturapeute.ch}
+  EMAIL_HOST: ${EMAIL_HOST:-}
+  EMAIL_PORT: ${EMAIL_PORT:-587}
+  EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+  EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
+  EMAIL_USE_TLS: ${EMAIL_USE_TLS:-True}
+  ACCOUNT_MAGIC_LINK_MAX_AGE: ${ACCOUNT_MAGIC_LINK_MAX_AGE:-900}
+  ACCOUNT_MAGIC_LINK_COOLDOWN_SECONDS: ${ACCOUNT_MAGIC_LINK_COOLDOWN_SECONDS:-60}
 
 x-app-volumes: &app-volumes
   - static_data:/app/static
@@ -55,9 +70,9 @@ services:
       migrate:
         condition: service_completed_successfully
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/', timeout=5)"]
-      interval: 10s
-      timeout: 10s
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/', timeout=30)"]
+      interval: 15s
+      timeout: 35s
       retries: 10
     restart: unless-stopped
 

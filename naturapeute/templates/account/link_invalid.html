@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block meta_title %}Lien de connexion invalide{% endblock %}
+{% block content %}
+<section class="account-card">
+<h1>Lien de connexion invalide</h1>
+Ce lien est invalide ou a expiré. Demandez un nouveau lien pour accéder à votre profil.
+<a href="{% url 'account' %}">Recevoir un nouveau lien</a>
+</section>
+{% endblock %}

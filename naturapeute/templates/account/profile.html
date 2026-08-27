@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block meta_title %}Mon profil thérapeute{% endblock %}
+
+{% block content %}
+<section class="profile-page">
+  <header class="profile-header">
+    <div>
+      <h1>Mon profil</h1>
+      <p><a href="{{ profile_url }}" target="_blank" rel="noopener">Voir mon profil public</a></p>
+    </div>
+    <form method="post" action="{% url 'account_logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="secondary">Se déconnecter</button>
+    </form>
+  </header>
+
+  {% if saved %}
+    <p class="notice success">Votre profil a été mis à jour.</p>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" class="profile-form">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <fieldset>
+      <legend>Photo</legend>
+      {% if therapist.photo_url %}
+        <img class="profile-photo" src="{{ therapist.photo_url }}" alt="{{ therapist.name }}">
+      {% endif %}
+      <p>{{ form.photo.label_tag }} {{ form.photo }} {{ form.photo.errors }}</p>
+      <small>JPEG, PNG ou WebP, 10 Mo maximum.</small>
+    </fieldset>
+
+    <fieldset>
+      <legend>Informations de contact</legend>
+      <div class="grid two-columns">
+        <p>{{ form.display_name.label_tag }} {{ form.display_name }} {{ form.display_name.errors }}</p>
+        <p>{{ form.gender.label_tag }} {{ form.gender }} {{ form.gender.errors }}</p>
+        <p>{{ form.firstname.label_tag }} {{ form.firstname }} {{ form.firstname.errors }}</p>
+        <p>{{ form.lastname.label_tag }} {{ form.lastname }} {{ form.lastname.errors }}</p>
+        <p>{{ form.email.label_tag }} {{ form.email }} {{ form.email.errors }}</p>
+        <p>{{ form.phone.label_tag }} {{ form.phone }} {{ form.phone.errors }}</p>
+        <p>{{ form.website.label_tag }} {{ form.website }} {{ form.website.errors }}</p>
+        <p>{{ form.facebook.label_tag }} {{ form.facebook }} {{ form.facebook.errors }}</p>
+        <p>{{ form.calendly_url.label_tag }} {{ form.calendly_url }} {{ form.calendly_url.errors }}</p>
+        <p>
+          {{ form.primary_practice.label_tag }}
+          <input type="search" id="primary-practice-search" placeholder="Rechercher une pratique" autocomplete="off">
+          {{ form.primary_practice }}
+          {{ form.primary_practice.errors }}
+        </p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Profil public</legend>
+      <p>{{ form.description.label_tag }} {{ form.description }} {{ form.description.errors }}</p>
+      <div class="grid two-columns">
+        <p>{{ form.price.label_tag }} {{ form.price }} {{ form.price.errors }}</p>
+        <p>{{ form.timetable.label_tag }} {{ form.timetable }} {{ form.timetable.errors }}</p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{ form.practices.label }}</legend>
+      {{ form.practices.errors }}
+      <input type="search" id="practices-search" placeholder="Rechercher une pratique" autocomplete="off">
+      <div class="choices" id="practices-options">{{ form.practices }}</div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{ form.languages.label }}</legend>
+      {{ form.languages.errors }}
+      <div class="choices">{{ form.languages }}</div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{ form.agreements.label }}</legend>
+      {{ form.agreements.errors }}
+      <div class="choices">{{ form.agreements }}</div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{ form.payment_types.label }}</legend>
+      {{ form.payment_types.errors }}
+      <div class="choices">{{ form.payment_types }}</div>
+    </fieldset>
+
+    <button type="submit">Enregistrer les modifications</button>
+  </form>
+</section>
+
+<style>
+  .profile-page { max-width: 58rem; margin: 2rem auto 4rem; }
+  .profile-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .profile-header h1 { margin-bottom: 0; }
+  .profile-form fieldset { margin: 1.5rem 0; padding: 1.25rem 0; border: 0; border-radius: 0; background: transparent; }
+  .profile-form legend { padding: 0 .4rem; font-weight: 700; }
+  .profile-form label, .profile-form input, .profile-form select, .profile-form textarea { display: block; width: 100%; }
+  .profile-form input, .profile-form select, .profile-form textarea { box-sizing: border-box; margin-top: .3rem; padding: .55rem; }
+  .profile-form input[type="checkbox"] { display: inline; width: auto; margin-right: .35rem; }
+  .profile-form input[type="search"] { margin-bottom: .75rem; }
+  .profile-form ul { list-style: none; margin: 0; padding: 0; columns: 2 16rem; }
+  .profile-form li { break-inside: avoid; margin: .35rem 0; }
+  .grid { display: grid; gap: .5rem 1rem; }
+  .two-columns { grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+  .profile-photo { display: block; max-width: 12rem; max-height: 12rem; object-fit: cover; margin-bottom: .75rem; }
+  .notice { padding: .8rem; border-radius: .25rem; }
+  .success { color: #17633b; background: #e7f7ed; }
+  .errorlist { color: #a11; padding-left: 1.2rem; }
+  button { padding: .7rem 1rem; cursor: pointer; }
+  button.secondary { background: transparent; border: 1px solid #777; }
+</style>
+<script>
+  (() => {
+    const primarySearch = document.querySelector('#primary-practice-search')
+    const primarySelect = document.querySelector('#id_primary_practice')
+    if (primarySearch && primarySelect) {
+      primarySearch.addEventListener('input', () => {
+        const query = primarySearch.value.trim().toLocaleLowerCase()
+        Array.from(primarySelect.options).forEach((option) => {
+          option.hidden = query && !option.text.toLocaleLowerCase().includes(query)
+        })
+      })
+    }
+
+    const practicesSearch = document.querySelector('#practices-search')
+    const practicesList = document.querySelector('#practices-options ul')
+    if (practicesSearch && practicesList) {
+      practicesSearch.addEventListener('input', () => {
+        const query = practicesSearch.value.trim().toLocaleLowerCase()
+        Array.from(practicesList.children).forEach((item) => {
+          item.hidden = query && !item.textContent.toLocaleLowerCase().includes(query)
+        })
+      })
+    }
+  })()
+</script>
+{% endblock %}
