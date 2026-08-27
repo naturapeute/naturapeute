@@ -10,21 +10,21 @@ TEABLE_API_TOKEN ?=
 TEABLE_ASSET_APP ?= server-copy/20260825-145618/app
 
 deploy:
-	ssh naturapeute "\
-		cd naturapeute && \
+	ssh "$(REMOTE_HOST)" "\
+		sudo lxc exec $(REMOTE_CONTAINER) -- bash -lc 'cd $(REMOTE_APP) && \
 		source venv/bin/activate && \
 		git pull && \
 		pip install -r requirements.txt && \
 		python manage.py collectstatic --noinput && \
 		python manage.py migrate && \
-		echo 'updated'"
+		echo updated'"
 	make restart-server
 
 restart-server:
-	ssh naturapeute "\
-		sudo systemctl daemon-reload && \
+	ssh "$(REMOTE_HOST)" "\
+		sudo lxc exec $(REMOTE_CONTAINER) -- bash -lc 'sudo systemctl daemon-reload && \
 		sudo systemctl restart naturapeute && \
-		echo 'server restarted'"
+		echo server-restarted'"
 
 import-from-mongo:
 	docker compose run --rm \
