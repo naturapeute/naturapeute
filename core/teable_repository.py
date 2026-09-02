@@ -195,6 +195,7 @@ class TeableTherapist:
         symptom_map,
         patient_map,
         practice_record_sources=None,
+        symptom_record_sources=None,
     ):
         fields = record.get("fields", {})
         self._record_id = record.get("id")
@@ -238,7 +239,9 @@ class TeableTherapist:
         if self.practice and self.practice not in self.practices:
             self.practices.insert(0, self.practice)
 
-        symptom_ids = _integer_list(fields.get("Symptom Source IDs"))
+        symptom_ids = _linked_source_ids(
+            fields.get("Symptom Source IDs"), symptom_record_sources or {}
+        )
         self.symptoms = TeableCollection(
             symptom_map[source_id]
             for source_id in symptom_ids
@@ -672,6 +675,7 @@ class TeableRepository:
                     symptom_map,
                     patient_map,
                     self._practice_record_sources,
+                    symptom_record_sources,
                 )
                 for record in records.get("Therapists", [])
                 if _integer(record.get("fields", {}).get("Source ID")) is not None
